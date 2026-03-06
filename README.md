@@ -1,3 +1,5 @@
+<!-- omit in toc -->
+# LIBOPC 
 
 BUILD ON LINUX/MAC OSX:
 ./configure
@@ -25,8 +27,8 @@ PACKAGE DEBIAN [http://www.debian.org/doc/manuals/maint-guide/index.en.html]
    Adjust debian/changelog
 2) ./configure --with-zlib=yes --with-zlib-ldflags="`pkg-config zlib --libs`" --with-libxml=yes --with-libxml-cppflags="`pkg-config libxml-2.0 --cflags`" --with-libxml-ldflags="`pkg-config libxml-2.0 --libs`" --arch=any
 DESTDIR=`pwd`/build/linux-debug-gcc-any/install make install
-3) dpkg-buildpackage
+1) dpkg-buildpackage
 or 
 3b) dpkg-buildpackage -B
-4) lintian -i -I --show-overrides ../libopc_0.0.2_i386.changes  | less
+1) lintian -i -I --show-overrides ../libopc_0.0.2_i386.changes  | less
 
