@@ -38,7 +38,6 @@ set(CMAKE_C_STANDARD 11)
 # ============================================================================
 option(LIBOPC_BUILD_TESTING "Enable libopc Examples as tests" OFF)
 option(BUILD_SHARED_LIBS "Enable building libopc shared library" OFF)
-option(LIBOPC_BUILD_STATIC "Enable building libopc static library" ON)
 option(LIBOPC_INSTALL "Enable installation of libopc" ON)
 option(LIBOPC_BUILD_SAMPLES "Enable building libopc sample scripts" ON)
 
@@ -104,7 +103,11 @@ if(ZLIB_FOUND)
 else()
     list(APPEND opc_libraries ZLIB::ZLIBSTATIC)
 endif()
-List(APPEND mce_libraries plib LibXml2::LibXml2)
+if(BUILD_SHARED_LIBS)
+    List(APPEND mce_libraries plib LibXml2::LibXml2)
+else()
+    List(APPEND mce_libraries plib_a LibXml2::LibXml2)
+endif()
 
 # ============================================================================
 # Include Directories
@@ -280,101 +283,102 @@ configure_file(
 # ============================================================================
 # Install
 # ============================================================================
-if(BUILD_SHARED_LIBS)
-  install(
-    TARGETS opc
-    COMPONENT Runtime
-    EXPORT opcSharedExport
-    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
-  install(
-      TARGETS mce 
-      COMPONENT Runtime
-      EXPORT mceSharedExport
-      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-      ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-      LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
-  install(
-      TARGETS plib 
-      COMPONENT Runtime
-      EXPORT plibSharedExport
-      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-      ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-      LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
-else()
-  install(
-      TARGETS opc_a  
-      COMPONENT Development
-      EXPORT opcStaticExport
-      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-      ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-      LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
-  install(
-      TARGETS mce_a  
-      COMPONENT Development
-      EXPORT mceStaticExport
-      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-      ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-      LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
-  install(
-      TARGETS plib_a 
-      COMPONENT Development
-      EXPORT plibStaticExport
-      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-      ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-      LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  )
+if(LIBOPC_INSTALL)
+    if(BUILD_SHARED_LIBS)
+    install(
+        TARGETS opc
+        COMPONENT Runtime
+        EXPORT opcSharedExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    install(
+        TARGETS mce 
+        COMPONENT Runtime
+        EXPORT mceSharedExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    install(
+        TARGETS plib 
+        COMPONENT Runtime
+        EXPORT plibSharedExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    else()
+    install(
+        TARGETS opc_a  
+        COMPONENT Development
+        EXPORT opcStaticExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    install(
+        TARGETS mce_a  
+        COMPONENT Development
+        EXPORT mceStaticExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    install(
+        TARGETS plib_a 
+        COMPONENT Development
+        EXPORT plibStaticExport
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    )
+    endif()
+
+    install(
+        FILES ${opc_headers}
+        COMPONENT Development
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/opc"
+    )
+    install(
+        FILES ${mce_headers}
+        COMPONENT Development
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/mce"
+    )
+    install(
+        FILES ${plib_headers}
+        COMPONENT Development
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/plib"
+    )
+
+    configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/opc-config.cmake.in"
+    "${PROJECT_BINARY_DIR}/opc-config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libopc
+    )
+
+    write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/libopc-config-version.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+    )
+
+    install(
+        FILES ${CMAKE_BINARY_DIR}/libopc-config-version.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libopc
+    )
+    install(
+    FILES ${OPC_PC}
+    COMPONENT Development
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+    )
+    install(
+        FILES ${CMAKE_SOURCE_DIR}/LICENSE 
+        COMPONENT Docs
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}/libopc"
+    )
 endif()
-
-install(
-    FILES ${opc_headers}
-    COMPONENT Development
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/opc"
-)
-install(
-    FILES ${mce_headers}
-    COMPONENT Development
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/mce"
-)
-install(
-    FILES ${plib_headers}
-    COMPONENT Development
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libopc/plib"
-)
-
-configure_package_config_file(
-  "${PROJECT_SOURCE_DIR}/cmake/opc-config.cmake.in"
-  "${PROJECT_BINARY_DIR}/opc-config.cmake"
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libopc
-)
-
-write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/libopc-config-version.cmake"
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion
-)
-
-install(
-    FILES ${CMAKE_BINARY_DIR}/libopc-config-version.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libopc
-)
-install(
-  FILES ${OPC_PC}
-  COMPONENT Development
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
-)
-install(
-    FILES ${CMAKE_SOURCE_DIR}/LICENSE 
-    COMPONENT Docs
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libopc"
-)
-
 # ============================================================================
 # Package
 # ============================================================================
