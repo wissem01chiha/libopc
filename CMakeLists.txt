@@ -18,6 +18,7 @@ set(CPACK_PACKAGE_VENDOR "libopc-project")
 set(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_SOURCE_DIR}/README.md)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE)
 set(CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
+set(CPACK_COMPONENTS_ALL Development Documentation Runtime)
 
 # ============================================================================
 # CTest
@@ -375,7 +376,7 @@ if(LIBOPC_INSTALL)
     )
     install(
         FILES ${CMAKE_SOURCE_DIR}/LICENSE 
-        COMPONENT Docs
+        COMPONENT Documentation
         DESTINATION "${CMAKE_INSTALL_DOCDIR}/libopc"
     )
 endif()
