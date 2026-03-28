@@ -57,7 +57,6 @@ extern "C" {
 #define HAVE_STDIO_H
 #define HAVE_STDLIB_H
 #define HAVE_IO_H
-#define snprintf _snprintf
 #else
 #error "configure not executed and we are not on a win32 machine? please run configure or define WIN32 is you are on a WIN32 platform."
 #endif

@@ -11,7 +11,6 @@ else()
     set(ZLIB_BUILD_SHARED OFF)
     set(ZLIB_BUILD_TESTING OFF)
     FetchContent_MakeAvailable(zlib)
-
-    include_directories(SYSTEM ${zlib_SOURCE_DIR})
+    set(ZLIB_INCLUDE_DIRS ${zlib_SOURCE_DIR})
     message(STATUS "zlib has been fetched and is available at ${zlib_SOURCE_DIR}")
 endif()
