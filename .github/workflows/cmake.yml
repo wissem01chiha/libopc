@@ -81,6 +81,16 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
+    
+    - name: Install packages (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install --no-progress nsis
+
+    - name: Install packages (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt install libbz2-dev
 
     - name: Generate project files
       run: cmake -S . -B ../build ${{ matrix.cmake-args }} -D CMAKE_BUILD_TYPE=${{ matrix.build-config || 'Release' }}
