@@ -37,46 +37,21 @@
 extern "C" {
 #endif
 
-#undef HAVE_STDINT_H
-#undef HAVE_STDDEF_H
-#undef HAVE_STDIO_H
-#undef HAVE_STRING_H
-#undef HAVE_LIMITS_H
-#undef HAVE_STDLIB_H
-#undef HAVE_IO_H
-#undef HAVE_UNISTD_H
-#undef HAVE_SYS_TYPES_H
-#undef IS_CONFIGURED
-
-#if !defined(IS_CONFIGURED)
-#if defined(WIN32)
-#define HAVE_STRING_H
-#define HAVE_STDINT_H
-#define HAVE_LIMITS_H
-#define HAVE_STDDEF_H
-#define HAVE_STDIO_H
-#define HAVE_STDLIB_H
-#define HAVE_IO_H
-#else
-#error "configure not executed and we are not on a win32 machine? please run configure or define WIN32 is you are on a WIN32 platform."
-#endif
-#endif
-
-#ifdef HAVE_STDDEF_H
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
 #include <stddef.h>
-typedef size_t pofs_t; // maximum file offset for eg. read write ops
-#else
-#error "system types can not be determined"
-#endif
-
-#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#include <stdint.h>
+#include <sys/types.h>
+
+#ifdef _WIN32
+#include <io.h>
 #else
-#error "system io can not be determined"
+#include <unistd.h>
 #endif
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
+typedef size_t pofs_t; // maximum file offset for eg. read write ops
 
 typedef int8_t pint8_t;
 typedef uint8_t puint8_t;
@@ -95,16 +70,7 @@ typedef int pbool_t;
 typedef size_t psize_t;
 
 // INTN_MAX, INTN_MIN, UINTN_MAX
-#else
-#error "system types can not be determined"
-#endif
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-
-#ifdef HAVE_LIMITS_H
-#include <limits.h>
 #define PUINT8_MAX UCHAR_MAX 
 #define PINT32_MAX INT_MAX 
 #define PINT32_MIN INT_MIN 
@@ -112,25 +78,6 @@ typedef size_t psize_t;
 #define PUINT32_MIN 0 
 #define PUINT16_MAX	USHRT_MAX 
 #define PUINT16_MIN 0 
-#else
-#error "limits can not be determined"
-#endif
-
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-
-#ifdef HAVE_IO_H
-#include <io.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
 
 /**
  Converts an ASCII string to a xmlChar string. This only works for ASCII strings.
