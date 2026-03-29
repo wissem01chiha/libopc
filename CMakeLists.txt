@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2010/2011, Florian Reuter
+# SPDX-FileCopyrightText: Copyright (c) 2026, Wissem Chiha
 # SPDX-License-Identifier: BSD-3-Clause
 cmake_minimum_required(VERSION 3.12...3.31)
+
 
 project(libopc LANGUAGES C)
 
