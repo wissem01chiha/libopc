@@ -28,18 +28,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+AC_INIT([libopc], [1.0], [chihawissem08@gmail.com])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
+AC_PROG_CC
+LT_INIT
 
-AC_INIT([plib])
-AC_CHECK_HEADERS([stdint.h])
-AC_CHECK_HEADERS([stddef.h])
-AC_CHECK_HEADERS([stdio.h])
-AC_CHECK_HEADERS([string.h])
-AC_CHECK_HEADERS([limits.h])
-AC_CHECK_HEADERS([stdlib.h])
-AC_CHECK_HEADERS([io.h])
-AC_CHECK_HEADERS([unistd.h])
-AC_CHECK_HEADERS([sys/types.h])
-AC_DEFINE(IS_CONFIGURED)
-AC_CONFIG_HEADERS([include/plib/plib.h:config/msvc/plib/include/plib/plib.h])
+PKG_CHECK_MODULES([LIBXML2], [libxml-2.0])
+AC_CHECK_HEADERS([stdint.h stddef.h stdio.h string.h limits.h stdlib.h io.h unistd.h sys/types.h])
+AC_DEFINE([IS_CONFIGURED], [1], [Define if configured])
+
+AC_CONFIG_HEADERS([config/config.h])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

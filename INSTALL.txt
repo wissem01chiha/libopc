@@ -1,6 +1,12 @@
+libopc build and installation guide :
+
 BUILD ON LINUX/MAC OSX:
-./configure
-make
+
+   sudo apt-get install libxml2-dev
+
+   autoreconf -i
+   ./configure
+   make
 
 BUILD on LINUX with system libs:
 ./configure --with-zlib=yes --with-zlib-ldflags="`pkg-config zlib --libs`" --with-libxml=yes --with-libxml-cppflags="`pkg-config libxml-2.0 --cflags`" --with-libxml-ldflags="`pkg-config libxml-2.0 --libs`"
