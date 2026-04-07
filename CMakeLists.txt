@@ -377,7 +377,7 @@ if(LIBOPC_INSTALL)
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
     )
     install(
-        FILES ${CMAKE_SOURCE_DIR}/LICENSE 
+        FILES ${CMAKE_SOURCE_DIR}/LICENSE.txt
         COMPONENT Documentation
         DESTINATION "${CMAKE_INSTALL_DOCDIR}/libopc"
     )
