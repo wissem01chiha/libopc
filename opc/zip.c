@@ -1,32 +1,32 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
  notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
- notice, this list of conditions and the following disclaimer in 
- the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
  distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
- may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+ may be used to endorse or promote products derived from this
  software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <opc/opc.h>
@@ -160,7 +160,7 @@ opcZip *opcZipCreate(opcIO_t *io) {
     if (NULL!=zip) {
         memset(zip, 0, sizeof(*zip));
         zip->first_free_segment_id=-1;
-        zip->io=io; 
+        zip->io=io;
     }
     return zip;
 }
@@ -270,8 +270,8 @@ static inline opc_uint16_t opcZipCalculateHeaderSize(const char *name8, opc_uint
     return 4*4+7*2+(extra?4*2:0)+len;
 }
 
-static opc_uint32_t opcZipRawWriteSegmentHeaderEx(opcIO_t *io, 
-                                                  opcFileRawState *rawState, 
+static opc_uint32_t opcZipRawWriteSegmentHeaderEx(opcIO_t *io,
+                                                  opcFileRawState *rawState,
                                                   const char *name8, opc_uint16_t name8_len,
                                                   opc_uint16_t bit_flag,
                                                   opc_uint32_t crc32,
@@ -311,8 +311,8 @@ static opc_uint32_t opcZipRawWriteSegmentHeaderEx(opcIO_t *io,
     }
 }
 
-static opc_error_t opcZipRawWriteCentralDirectoryEx(opcIO_t *io, 
-                                                  opcFileRawState *rawState, 
+static opc_error_t opcZipRawWriteCentralDirectoryEx(opcIO_t *io,
+                                                  opcFileRawState *rawState,
                                                   const char *name8, opc_uint16_t name8_len,
                                                   opc_uint16_t bit_flag,
                                                   opc_uint32_t crc32,
@@ -324,7 +324,7 @@ static opc_error_t opcZipRawWriteCentralDirectoryEx(opcIO_t *io,
                                                   opc_ofs_t stream_ofs) {
     if (OPC_ERROR_NONE==rawState->err) {
         if((4==opcZipRawWriteU32(io, rawState, 0x02014b50))
-        && (2==opcZipRawWriteU16(io, rawState, 20))  // version made by 
+        && (2==opcZipRawWriteU16(io, rawState, 20))  // version made by
         && (2==opcZipRawWriteU16(io, rawState, 20))  // version needed to extract
         && (2==opcZipRawWriteU16(io, rawState, bit_flag))  // bit flag
         && (2==opcZipRawWriteU16(io, rawState, compression_method))  // compression method
@@ -350,9 +350,9 @@ static opc_error_t opcZipRawWriteCentralDirectoryEx(opcIO_t *io,
 }
 
 
-static opc_error_t opcZipRawWriteEndOfCentralDirectoryEx(opcIO_t *io, 
+static opc_error_t opcZipRawWriteEndOfCentralDirectoryEx(opcIO_t *io,
                                                   opcFileRawState *rawState,
-                                                  opc_ofs_t central_dir_start_ofs, 
+                                                  opc_ofs_t central_dir_start_ofs,
                                                   opc_uint32_t segments) {
     opc_ofs_t central_dir_end_ofs=rawState->buf_pos;
     OPC_ASSERT(central_dir_start_ofs<=central_dir_end_ofs);
@@ -361,7 +361,7 @@ static opc_error_t opcZipRawWriteEndOfCentralDirectoryEx(opcIO_t *io,
         && (2==opcZipRawWriteU16(io, rawState, 0x0))  // number of this disk
         && (2==opcZipRawWriteU16(io, rawState, 0x0))  // number of the disk with the start of the central directory
         && (2==opcZipRawWriteU16(io, rawState, segments))  // total number of entries in the central directory on this disk
-        && (2==opcZipRawWriteU16(io, rawState, segments))  // total number of entries in the central directory 
+        && (2==opcZipRawWriteU16(io, rawState, segments))  // total number of entries in the central directory
         && (4==opcZipRawWriteU32(io, rawState, central_dir_end_ofs-central_dir_start_ofs))  // size of the central directory
         && (4==opcZipRawWriteU32(io, rawState, central_dir_start_ofs))  // offset of start of central directory with respect to the starting disk number
         && (2==opcZipRawWriteU16(io, rawState, 0x0))) {// .ZIP file comment length
@@ -430,10 +430,10 @@ static inline opc_uint32_t opcZipRawPeekHeaderSignature(opcIO_t *io, opcFileRawB
     }
     if (OPC_ERROR_NONE==raw->state.err && 0==raw->buf_len) {
         return 0; // end of file
-    } else if (OPC_ERROR_NONE!=raw->state.err || raw->buf_ofs+4>raw->buf_len) { 
+    } else if (OPC_ERROR_NONE!=raw->state.err || raw->buf_ofs+4>raw->buf_len) {
         // either an error or not enough bytes
         return -1;
-    } else { 
+    } else {
         OPC_ASSERT(OPC_ERROR_NONE==raw->state.err && raw->buf_ofs+4<=raw->buf_len); // enough bytes...
         return (raw->buf[raw->buf_ofs]<<0)
               +(raw->buf[raw->buf_ofs+1]<<8)
@@ -602,7 +602,7 @@ static inline int opcZipRawReadString(opcIO_t *io, opcFileRawBuffer *raw, xmlCha
     return str_ofs;
 }
 
-static opc_bool_t opcZipRawReadLocalFileEx(opcIO_t *io, opcFileRawBuffer *raw, 
+static opc_bool_t opcZipRawReadLocalFileEx(opcIO_t *io, opcFileRawBuffer *raw,
                                     xmlChar *name, opc_uint32_t name_size, opc_uint32_t *name_len,
                                     opc_uint32_t *header_size,
                                     opc_uint32_t *min_header_size,
@@ -627,7 +627,7 @@ static opc_bool_t opcZipRawReadLocalFileEx(opcIO_t *io, opcFileRawBuffer *raw,
         if (2==opcZipRawReadU16(io, raw, compression_method))
         if (2==opcZipRawReadU16(io, raw, NULL)) // last_mod_time
         if (2==opcZipRawReadU16(io, raw, NULL)) // last_mod_date
-        if (4==opcZipRawReadU32(io, raw, crc32)) // 
+        if (4==opcZipRawReadU32(io, raw, crc32)) //
         if (4==opcZipRawReadU32(io, raw, compressed_size))
         if (4==opcZipRawReadU32(io, raw, uncompressed_size))
         if (2==opcZipRawReadU16(io, raw, &filename_length))
@@ -648,7 +648,7 @@ static opc_bool_t opcZipRawReadLocalFileEx(opcIO_t *io, opcFileRawBuffer *raw,
                             opc_uint16_t sig;
                             opc_uint16_t padVal;
                             if (2==opcZipRawReadU16(io, raw, &sig) && 0xa028==sig
-                                && 2==opcZipRawReadU16(io, raw, &padVal) 
+                                && 2==opcZipRawReadU16(io, raw, &padVal)
                                 && extra_size>=4 && extra_size-4==opcZipRawSkipBytes(io, raw, extra_size-4)) {
                                 *growth_hint=padVal;
                                 extra_length-=4+extra_size;
@@ -668,7 +668,7 @@ static opc_bool_t opcZipRawReadLocalFileEx(opcIO_t *io, opcFileRawBuffer *raw,
                         break;
                     }
                 }
-                
+
             }
             ret=(OPC_ERROR_NONE==raw->state.err && 0==extra_length);
         }
@@ -711,7 +711,7 @@ static opc_error_t opcZipRawReadDataDescriptor(opcIO_t *io, opcFileRawBuffer *ra
 static opc_error_t opcZipInitInflateState(opcFileRawState *rawState,
                                    opc_uint32_t compressed_size,
                                    opc_uint32_t uncompressed_size,
-                                   opc_uint16_t compression_method, 
+                                   opc_uint16_t compression_method,
                                    opcZipInflateState *state) {
     memset(state, 0, sizeof(*state));
     state->stream.zalloc = Z_NULL;
@@ -737,7 +737,7 @@ static opc_error_t opcZipInitInflateState(opcFileRawState *rawState,
     }
 }
 
-static opc_error_t opcZipCleanupInflateState(opcFileRawState *rawState, 
+static opc_error_t opcZipCleanupInflateState(opcFileRawState *rawState,
                                       opc_uint32_t compressed_size,
                                       opc_uint32_t uncompressed_size,
                                       opcZipInflateState *state) {
@@ -930,15 +930,15 @@ opc_error_t opcZipLoader(opcIO_t *io, void *userctx, opcZipLoaderSegmentCallback
 opcZipInputStream *opcZipOpenInputStream(opcZip *zip, opc_uint32_t segment_id) {
     OPC_ASSERT(segment_id>=0 && segment_id<zip->segment_items);
     opcZipInputStream *stream=(opcZipInputStream *)xmlMalloc(sizeof(opcZipInputStream));
-    if (NULL!=stream) {        
+    if (NULL!=stream) {
         opc_bzero_mem(stream, sizeof(*stream));
         stream->segment_id=segment_id;
         opcZipSegment *segment=&zip->segment_array[segment_id];
         stream->rawBuffer.state.buf_pos=segment->stream_ofs+segment->padding+segment->header_size;
-        if (OPC_ERROR_NONE!=opcZipInitInflateState(&stream->rawBuffer.state, 
-                                                   segment->compressed_size, 
-                                                   segment->uncompressed_size, 
-                                                   segment->compression_method, 
+        if (OPC_ERROR_NONE!=opcZipInitInflateState(&stream->rawBuffer.state,
+                                                   segment->compressed_size,
+                                                   segment->uncompressed_size,
+                                                   segment->compression_method,
                                                    &stream->inflateState)) {
             // error
             xmlFree(stream); stream=NULL;
@@ -951,9 +951,9 @@ opc_error_t opcZipCloseInputStream(opcZip *zip, opcZipInputStream *stream) {
     OPC_ASSERT(NULL!=zip && NULL!=stream);
     OPC_ASSERT(stream->segment_id>=0 && stream->segment_id<zip->segment_items);
     opcZipSegment *segment=&zip->segment_array[stream->segment_id];
-    opc_error_t err=opcZipCleanupInflateState(&stream->rawBuffer.state, 
-                                              segment->compressed_size, 
-                                              segment->uncompressed_size, 
+    opc_error_t err=opcZipCleanupInflateState(&stream->rawBuffer.state,
+                                              segment->compressed_size,
+                                              segment->uncompressed_size,
                                               &stream->inflateState);
     xmlFree(stream); stream=NULL;
     return err;
@@ -969,7 +969,7 @@ opc_uint32_t opcZipReadInputStream(opcZip *zip, opcZipInputStream *stream, opc_u
     return ret;
 }
 
-static opc_uint32_t opcZipAppendSegmentEx(opcZip *zip, 
+static opc_uint32_t opcZipAppendSegmentEx(opcZip *zip,
                                    opc_ofs_t stream_ofs,
                                    opc_ofs_t segment_size,
                                    opc_uint16_t padding,
@@ -1005,26 +1005,26 @@ static opc_uint32_t opcZipAppendSegmentEx(opcZip *zip,
 }
 
 opc_uint32_t opcZipLoadSegment(opcZip *zip, const xmlChar *partName, opc_bool_t rels_segment, opcZipSegmentInfo_t *info) {
-    opc_uint32_t ret=opcZipAppendSegmentEx(zip, 
+    opc_uint32_t ret=opcZipAppendSegmentEx(zip,
                                            info->stream_ofs,
                                            info->header_size+info->compressed_size+info->trailing_bytes,
                                            info->header_size-info->min_header_size,
-                                           info->min_header_size, 
+                                           info->min_header_size,
                                            info->bit_flag,
                                            info->data_crc,
                                            info->compression_method,
                                            info->compressed_size,
                                            info->uncompressed_size,
                                            info->growth_hint,
-                                           partName, 
+                                           partName,
                                            rels_segment);
     return ret;
 }
 
-opc_uint32_t opcZipCreateSegment(opcZip *zip, 
-                                 const xmlChar *partName, 
-                                 opc_bool_t relsSegment, 
-                                 opc_uint32_t segment_size, 
+opc_uint32_t opcZipCreateSegment(opcZip *zip,
+                                 const xmlChar *partName,
+                                 opc_bool_t relsSegment,
+                                 opc_uint32_t segment_size,
                                  opc_uint32_t growth_hint,
                                  opc_uint16_t compression_method,
                                  opc_uint16_t bit_flag) {
@@ -1047,7 +1047,7 @@ opc_uint32_t opcZipCreateSegment(opcZip *zip,
 }
 
 opc_error_t opcZipGC(opcZip *zip) {
-    for(opc_uint32_t i=1;i<zip->segment_items;i++) { 
+    for(opc_uint32_t i=1;i<zip->segment_items;i++) {
         OPC_ASSERT(zip->segment_array[i-1].stream_ofs+zip->segment_array[i-1].segment_size==zip->segment_array[i].stream_ofs);
         if (!zip->segment_array[i-1].deleted_segment && !zip->segment_array[i].deleted_segment) {
             opcZipSegment *segment=&zip->segment_array[i];
@@ -1066,7 +1066,7 @@ opc_error_t opcZipGC(opcZip *zip) {
             segment->segment_size-=segment->padding;
             segment->padding=0;
             segment->header_size=header_size;
-        } 
+        }
         OPC_ASSERT(zip->segment_array[i-1].stream_ofs+zip->segment_array[i-1].segment_size==zip->segment_array[i].stream_ofs);
     }
     return OPC_ERROR_NONE;
@@ -1075,7 +1075,7 @@ opc_error_t opcZipGC(opcZip *zip) {
 static void opcZipSegmentCalcReal(opcZip *zip, opc_uint32_t segment_id, opc_ofs_t *real_padding, opc_ofs_t *real_ofs) {
     OPC_ASSERT(segment_id>=0 && segment_id<zip->segment_items);
     *real_padding=zip->segment_array[segment_id].padding;
-    opc_uint32_t i=segment_id; 
+    opc_uint32_t i=segment_id;
     for(;i>0 && zip->segment_array[i-1].deleted_segment;i--) {
         *real_padding+=zip->segment_array[i-1].segment_size;
     }
@@ -1111,7 +1111,7 @@ static opc_bool_t opcZipValidate(opcZip *zip, opc_ofs_t *append_ofs) {
 
 static void opcZipTrim(opcZip *zip, opc_ofs_t *append_ofs) {
     opc_ofs_t ofs=0;
-    for(opc_uint32_t i=0;i<zip->segment_items;i++) { 
+    for(opc_uint32_t i=0;i<zip->segment_items;i++) {
         if (!zip->segment_array[i].deleted_segment) {
             opc_ofs_t real_padding=0;
             opc_ofs_t real_ofs=0;
@@ -1132,16 +1132,16 @@ static void opcZipTrim(opcZip *zip, opc_ofs_t *append_ofs) {
             for(opc_uint32_t j=i;j>0 && zip->segment_array[j-1].deleted_segment;j--) {
                 zip->segment_array[j-1].stream_ofs=ofs;
                 zip->segment_array[j-1].segment_size=0; // make it a "ZOMBI" segment
-                zip->segment_array[j-1].header_size=0; 
+                zip->segment_array[j-1].header_size=0;
                 zip->segment_array[j-1].padding=0;
             }
-            ofs+=zip->segment_array[i].segment_size;            
+            ofs+=zip->segment_array[i].segment_size;
         }
     }
     for(opc_uint32_t j=zip->segment_items;j>0 && zip->segment_array[j-1].deleted_segment;j--) {
         zip->segment_array[j-1].stream_ofs=ofs;
         zip->segment_array[j-1].segment_size=0; // make it a "ZOMBI" segment
-        zip->segment_array[j-1].header_size=0; 
+        zip->segment_array[j-1].header_size=0;
         zip->segment_array[j-1].padding=0;
     }
 
@@ -1161,8 +1161,8 @@ static void opcZipUpdateLocalFileHeader(opcZip *zip) {
         opc_uint16_t name8_len=opcHelperAssembleSegmentName(name8, sizeof(name8), zip->segment_array[i].partName, 0, -1, zip->segment_array[i].rels_segment, NULL);
 //        opc_uint32_t header_size=opcZipCalculateHeaderSize(name8, name8_len, OPC_TRUE, NULL);
         OPC_ASSERT(zip->segment_array[i].stream_ofs+zip->segment_array[i].padding==real_ofs+real_padding);
-        OPC_ENSURE(opcZipRawWriteSegmentHeaderEx(zip->io, &zip->io->state, 
-                                                 name8, name8_len, 
+        OPC_ENSURE(opcZipRawWriteSegmentHeaderEx(zip->io, &zip->io->state,
+                                                 name8, name8_len,
                                                  zip->segment_array[i].bit_flag,
                                                  zip->segment_array[i].crc32,
                                                  zip->segment_array[i].compression_method,
@@ -1184,7 +1184,7 @@ static void opcZipAppendDirectory(opcZip *zip, opc_ofs_t append_ofs) {
         char name8[OPC_MAX_PATH];
         opc_uint16_t name8_len=opcHelperAssembleSegmentName(name8, sizeof(name8), zip->segment_array[i].partName, 0, -1, zip->segment_array[i].rels_segment, NULL);
         OPC_ENSURE(OPC_ERROR_NONE==opcZipRawWriteCentralDirectoryEx(zip->io, &zip->io->state,
-                                                                    name8, name8_len, 
+                                                                    name8, name8_len,
                                                                     zip->segment_array[i].bit_flag,
                                                                     zip->segment_array[i].crc32,
                                                                     zip->segment_array[i].compression_method,
@@ -1236,14 +1236,14 @@ opcZipOutputStream *opcZipOpenOutputStream(opcZip *zip, opc_uint32_t *segment_id
             out->stream.opaque = Z_NULL;
             int level=Z_DEFAULT_COMPRESSION;
             switch ((segment->bit_flag>>1) & 0x3) {
-            default: 
-            case 0: level=Z_DEFAULT_COMPRESSION; 
+            default:
+            case 0: level=Z_DEFAULT_COMPRESSION;
                 break;
-            case 1: level=Z_BEST_COMPRESSION; 
+            case 1: level=Z_BEST_COMPRESSION;
                 break;
-            case 2: level=Z_BEST_SPEED; 
+            case 2: level=Z_BEST_SPEED;
                 break;
-            case 3: level=Z_BEST_SPEED; 
+            case 3: level=Z_BEST_SPEED;
                 break;
             }
             if (Z_OK!=(out->inflate_state=deflateInit2(&out->stream, level, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY))) {
@@ -1254,11 +1254,11 @@ opcZipOutputStream *opcZipOpenOutputStream(opcZip *zip, opc_uint32_t *segment_id
     return out;
 }
 
-opcZipOutputStream *opcZipCreateOutputStream(opcZip *zip, 
-                                             opc_uint32_t *segment_id, 
-                                             const xmlChar *partName, 
-                                             opc_bool_t relsSegment, 
-                                             opc_uint32_t segment_size, 
+opcZipOutputStream *opcZipCreateOutputStream(opcZip *zip,
+                                             opc_uint32_t *segment_id,
+                                             const xmlChar *partName,
+                                             opc_bool_t relsSegment,
+                                             opc_uint32_t segment_size,
                                              opc_uint32_t growth_hint,
                                              opc_uint16_t compression_method,
                                              opc_uint16_t bit_flag) {
@@ -1303,7 +1303,7 @@ static opc_uint32_t opcZipOutputStreamFill(opcZip *zip, opcZipOutputStream *stre
                 stream->crc32=crc32(stream->crc32, data, bytes_in);
                 ret=bytes_in;
                 stream->buf_len+=bytes_out;
-            } else {                
+            } else {
                 zip->io->state.err=OPC_ERROR_DEFLATE;
             }
         } else {
@@ -1406,12 +1406,12 @@ static void opcZipOutputStreamFlushAndGrow(opcZip *zip, opcZipOutputStream *stre
             stream->buf_len=0;
         } else {
             OPC_ASSERT(0); // should not happend! => can't get enought space!
-            err=OPC_ERROR_STREAM; 
+            err=OPC_ERROR_STREAM;
         }
         if (OPC_ERROR_NONE!=err && OPC_ERROR_NONE==zip->io->state.err) {
             zip->io->state.err=err;
         }
-    }    
+    }
 }
 
 static void opcZipOutputStreamFinishSegment(opcZip *zip, opcZipOutputStream *stream) {

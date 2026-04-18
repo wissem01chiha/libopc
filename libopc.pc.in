@@ -15,6 +15,5 @@ Version: @PROJECT_VERSION@
 Cflags: -I@CMAKE_INSTALL_PREFIX@
 Requires:
 Libs: -L${libdir} -lopc -lmce -lplib
-Libs.private:  -lxml2 -lz -lm  
+Libs.private:  -lxml2 -lz -lm
 Cflags: -I${includedir}
-

@@ -13,14 +13,14 @@ jobs:
             compiler: gcc
             cflags: -Wall -Wextra
             pkgtgt: package package_source
-            cmake-args: 
+            cmake-args:
 
           - name: Ubuntu Clang
             os: ubuntu-latest
             compiler: clang
             cflags: -Wall -Wextra
             pkgtgt: package package_source
-            cmake-args: 
+            cmake-args:
 
           - name: Windows MSVC Win32
             os: windows-latest
@@ -33,21 +33,21 @@ jobs:
             os: windows-latest
             compiler: cl
             cflags: /W3
-            cmake-args: -A x64 
+            cmake-args: -A x64
             pkgtgt: PACKAGE
 
           - name: Windows MSVC ARM64
             os: windows-11-arm
             compiler: cl
             cflags: /W3
-            cmake-args: -A ARM64 
+            cmake-args: -A ARM64
             pkgtgt: PACKAGE
 
           - name: Windows GCC
             os: windows-latest
             compiler: gcc
             cflags: -Wall -Wextra
-            cmake-args: -G Ninja 
+            cmake-args: -G Ninja
             pkgtgt: package
 
           - name: macOS Clang
@@ -55,33 +55,33 @@ jobs:
             compiler: clang
             cflags: -Wall -Wextra
             pkgtgt: package
-            cmake-args: 
+            cmake-args:
 
           - name: macOS GCC 13
             os: macos-latest
             compiler: gcc-13
             cflags: -Wall -Wextra
             pkgtgt: package
-            cmake-args: 
+            cmake-args:
 
           - name: macOS GCC 14
             os: macos-latest
             compiler: gcc-14
             cflags: -Wall -Wextra
             pkgtgt: package
-            cmake-args: 
+            cmake-args:
 
           - name: macOS GCC 15
             os: macos-latest
             compiler: gcc-15
             cflags: -Wall -Wextra
             pkgtgt: package
-            cmake-args: 
+            cmake-args:
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-    
+
     - name: Install packages (Windows)
       if: runner.os == 'Windows'
       run: |

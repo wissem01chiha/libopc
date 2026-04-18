@@ -51,7 +51,7 @@ slog_init("logfile", nEnabledLevels, 0);
 ```
 
  - The first argument is the name of the file where we want to save logs.
- - The second argument is the logging level flags which are allowed to print. 
+ - The second argument is the logging level flags which are allowed to print.
  - Third argument is a thread safety flag *(1 enabled, 0 disabled)*.
 
 If the thread safety flag is greater than zero, the function initializes mutex and every other call of any slog function is protected by lock.
@@ -95,7 +95,7 @@ slog_display(SLOG_DEBUG, 0, "Simple debug message without new line character");
  - The third argument is the formatted string which we want to display in the output.
 
 #### Macros
-SLog has the cleaner option to log messages without the need to provide the flag parameter. 
+SLog has the cleaner option to log messages without the need to provide the flag parameter.
 
 Here are defined macros based on the logging levels.
 
@@ -250,7 +250,7 @@ slgCfg.eColorFormat = SLOG_COLORING_FULL;
 slog_config_set(&slgCfg);
 slog_debug("Message with full line color");
 
-/* Disable coloring at all */ 
+/* Disable coloring at all */
 slgCfg.eColorFormat = SLOG_COLORING_DISABLE;
 slog_config_set(&slgCfg);
 slog_debug("Message without coloring");
@@ -272,7 +272,7 @@ slgCfg.eDateControl = SLOG_TIME_ONLY;
 slog_config_set(&slgCfg);
 slog_debug("Message with time only");
 
-/* Enable date + time in output */ 
+/* Enable date + time in output */
 slgCfg.eDateControl = SLOG_DATE_FULL;
 slog_config_set(&slgCfg);
 slog_debug("Message with time and date");
@@ -394,7 +394,7 @@ Simple message without anything
 (8180) 02:11:34.36 - <fatal> [example.c:108] Fatal message also throws source location
 (8180) 2021.05.23-02:11:34.36 - <debug> Debug message with time and date
 (8180) 2021.05.23-02:11:34.36 - <debug> Disabled output coloring
-(8180) 2021.05.23-02:11:34.36 - <trace> [example.c:124] 
+(8180) 2021.05.23-02:11:34.36 - <trace> [example.c:124]
 (8180) 2021.05.23-02:11:34.36 - <debug> Above we traced source location without output message
 
 ```

@@ -1,32 +1,32 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
  notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
- notice, this list of conditions and the following disclaimer in 
- the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
  distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
- may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+ may be used to endorse or promote products derived from this
  software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <mce/textreader.h>
@@ -86,7 +86,7 @@ void mceRaiseError(xmlTextReader *reader, mceCtx_t *ctx, mceError_t error, const
     xmlStrVPrintf(buf, sizeof(buf), str, args);
     xmlTextReaderErrorFunc f=NULL;
     void *arg=NULL;
-    xmlTextReaderGetErrorHandler(reader, &f, &arg);    
+    xmlTextReaderGetErrorHandler(reader, &f, &arg);
     if (NULL!=f) {
         f(arg, (const char *)buf, XML_PARSER_SEVERITY_ERROR, (xmlTextReaderLocatorPtr)reader);
     } else {
@@ -104,16 +104,16 @@ static void mceTextReaderProcessAttributes(xmlTextReader *reader, mceCtx_t *ctx,
     xmlNodePtr c=xmlTextReaderCurrentNode(reader);
     if (NULL!=c) { // make sure to inherit any namespace declaration on a parent MCE element
         for(xmlNodePtr n=c->parent;
-            NULL!=n && XML_ELEMENT_NODE==n->type 
-            && NULL!=n->ns && 0==xmlStrcmp(n->ns->href, _X(ns_mce)) 
+            NULL!=n && XML_ELEMENT_NODE==n->type
+            && NULL!=n->ns && 0==xmlStrcmp(n->ns->href, _X(ns_mce))
             && NULL!=n->name
-            && (0==xmlStrcmp(_X("AlternateContent"), n->name) 
-                || 0==xmlStrcmp(_X("Choice"), n->name)  
+            && (0==xmlStrcmp(_X("AlternateContent"), n->name)
+                || 0==xmlStrcmp(_X("Choice"), n->name)
                 || 0==xmlStrcmp(_X("Fallback"), n->name));
             n=n->parent) {
             for(xmlNs *nsDef=n->nsDef;NULL!=nsDef;nsDef=nsDef->next) {
                 xmlAttrPtr a=xmlHasNsProp(c, nsDef->prefix, _X(ns_xml));
-                if (NULL==a) { // only add a namespace if the prefix is not overwritten in the current node                    
+                if (NULL==a) { // only add a namespace if the prefix is not overwritten in the current node
                     xmlNsPtr xmlns_ns=xmlNewNs(c, nsDef->href, nsDef->prefix);
                 }
             }
@@ -195,8 +195,8 @@ static void mceTextReaderProcessAttributes(xmlTextReader *reader, mceCtx_t *ctx,
                     OPC_ASSERT(XML_ATTRIBUTE_NODE==xmlTextReaderCurrentNode(reader)->type);
                     remove=(xmlAttrPtr)xmlTextReaderCurrentNode(reader);
                 } else if (NULL!=mceQNameLevelLookup(&ctx->ignorable_set,
-                    xmlTextReaderConstNamespaceUri(reader), 
-                    NULL, 
+                    xmlTextReaderConstNamespaceUri(reader),
+                    NULL,
                     PFALSE)) {
                         OPC_ASSERT(XML_ATTRIBUTE_NODE==xmlTextReaderCurrentNode(reader)->type);
                         remove=(xmlAttrPtr)xmlTextReaderCurrentNode(reader);
@@ -241,7 +241,7 @@ static pbool_t mceTextReaderProcessStartElement(xmlTextReader *reader, mceCtx_t 
             }
             if (NULL!=req_ns) xmlFree(req_ns);
         } else if (0==xmlStrcmp(_X(ns_mce), ns) && 0==xmlStrcmp(_X("Fallback"), ln)) {
-            if (NULL==mceSkipStackTop(&ctx->skip_stack) 
+            if (NULL==mceSkipStackTop(&ctx->skip_stack)
                 || !(mceSkipStackTop(&ctx->skip_stack)->state==MCE_SKIP_STATE_ALTERNATE_CONTENT || mceSkipStackTop(&ctx->skip_stack)->state==MCE_SKIP_STATE_CHOICE_MATCHED)
                 || mceSkipStackTop(&ctx->skip_stack)->level_start+1!=level
                 || mceSkipStackTop(&ctx->skip_stack)->level_end!=level) {
@@ -277,7 +277,7 @@ static pbool_t mceTextReaderProcessEndElement(xmlTextReader *reader, mceCtx_t *c
     mceQNameLevelCleanup(&ctx->ignorable_set, level);
     mceQNameLevelCleanup(&ctx->processcontent_set, level);
     mceQNameLevelCleanup(&ctx->understands_set, level);
-    mceQNameLevelCleanup(&ctx->suspended_set, level); 
+    mceQNameLevelCleanup(&ctx->suspended_set, level);
     return skiped;
 }
 

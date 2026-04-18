@@ -1,32 +1,32 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
  notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
- notice, this list of conditions and the following disclaimer in 
- the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
  distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
- may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+ may be used to endorse or promote products derived from this
  software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <opc/helper.h>
@@ -115,7 +115,7 @@ static puint32_t opcHelperFilenameAppendPiece(opc_uint32_t segment_number, opc_b
 
 
 opc_uint16_t opcHelperAssembleSegmentName(char *out, opc_uint16_t out_size, const xmlChar *name, opc_uint32_t segment_number, opc_uint32_t next_segment_id, opc_bool_t rels_segment, opc_uint16_t *out_max) {
-    opc_uint16_t out_length=opcHelperEncodeFilename(name, out, out_size, rels_segment); 
+    opc_uint16_t out_length=opcHelperEncodeFilename(name, out, out_size, rels_segment);
     opc_uint16_t const _out_max=out_length+24; // file+|/[4294967296].last.piece|=file+24
                                                // _rels/file.rels=|_rels/|+|.rels|=6+5=11
     out_length=opcHelperFilenameAppendPiece(segment_number, next_segment_id, out, out_length, out_size);
@@ -184,11 +184,11 @@ opc_error_t opcHelperSplitFilename(opc_uint8_t *filename, opc_uint32_t filename_
         while(i>0 && filename[i-1]!='/') i--;
         //"_rels/"
         if (i>=6
-            && filename[i-6]=='_' 
-            && filename[i-5]=='r' 
-            && filename[i-4]=='e' 
-            && filename[i-3]=='l' 
-            && filename[i-2]=='s' 
+            && filename[i-6]=='_'
+            && filename[i-5]=='r'
+            && filename[i-4]=='e'
+            && filename[i-3]=='l'
+            && filename[i-2]=='s'
             && filename[i-1]=='/') {
             opc_uint32_t j=i;
             for(;j<filename_length-5;j++) {

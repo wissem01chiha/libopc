@@ -12,7 +12,7 @@ static pbool_t mceQNameLevelLookupEx(mceQNameLevelSet_t *qname_level_set, const 
         int const cmp=(ignore_ln?ns_cmp:(0==ns_cmp?xmlStrcmp(ln, q2->ln):ns_cmp));
         if (cmp<0) { j=m; } else if (cmp>0) { i=m+1; } else { *pos=m; return PTRUE; }
     }
-    PASSERT(i==j); 
+    PASSERT(i==j);
     *pos=i;
     return PFALSE;
 }
@@ -95,8 +95,8 @@ mceSkipItem_t *mceSkipStackTop(mceSkipStack_t *skip_stack) {
 }
 
 pbool_t mceSkipStackSkip(mceSkipStack_t *skip_stack, puint32_t level) {
-    return NULL!=skip_stack->stack_array && skip_stack->stack_items>0 
-        && level>=skip_stack->stack_array[skip_stack->stack_items-1].level_start 
+    return NULL!=skip_stack->stack_array && skip_stack->stack_items>0
+        && level>=skip_stack->stack_array[skip_stack->stack_items-1].level_start
         && level<skip_stack->stack_array[skip_stack->stack_items-1].level_end;
 }
 
@@ -122,7 +122,7 @@ pbool_t mceCtxCleanup(mceCtx_t *ctx) {
     PENSURE(mceQNameLevelCleanup(&ctx->subsume_exclude_set, 0));
     PENSURE(mceQNameLevelCleanup(&ctx->subsume_prefix_set, 0));
 #endif
-    
+
     if (NULL!=ctx->ignorable_set.list_array) xmlFree(ctx->ignorable_set.list_array);
     if (NULL!=ctx->understands_set.list_array) xmlFree(ctx->understands_set.list_array);
     if (NULL!=ctx->skip_stack.stack_array) xmlFree(ctx->skip_stack.stack_array);
@@ -151,4 +151,3 @@ pbool_t mceCtxSubsumeNamespace(mceCtx_t *ctx, const xmlChar *prefix_new, const x
         && mceQNameLevelAdd(&ctx->subsume_prefix_set, ns_new, prefix_new, 0);
 }
 #endif
-

@@ -23,7 +23,7 @@ def platformSubseteqTest(a, b):
 	b4=b.split("-")
 	ret=len(a4)==len(b4)
 	i=0
-	while i<len(a4) and i<len(b4):		
+	while i<len(a4) and i<len(b4):
 		ret=ret and (a4[i]==b4[i] or b4[i]=="*")
 		i=i+1
 #	sys.stderr.write("platformSubseteqTest("+a+", "+b+")="+str(ret))
@@ -37,7 +37,7 @@ def parseFile(node, ctx, list):
 	if "platform" in node.attrib:
 		filter=node.attrib["platform"]
 		filterMatch=platformSubseteqTest(ctx["platform"], filter)
-		
+
 	if filterMatch:
 		file_ext=os.path.splitext(path)[1]
 		if file_ext in EXT_MAPPING:
@@ -65,7 +65,7 @@ def parseFiles(target, node, ctx):
 
 def setAttr(dict, node, tag):
 	if tag in node.attrib:
-		dict[tag]=node.attrib[tag]		
+		dict[tag]=node.attrib[tag]
 
 def fallbackCompare(a, b):
 	return -cmp(a.count('-'), b.count('-'))
@@ -91,7 +91,7 @@ def generateFallbackList(platform):
 def updateCtx(conf, ctx, node):
 	if "root" in node.attrib:
 		root=ctx["root"]
-		ctx=copy.copy(ctx)	
+		ctx=copy.copy(ctx)
 		rel_prj_path=os.path.split(ctx["root"])[1]
 		prjconfigdir=os.path.join(ctx["config"], rel_prj_path, "config")
 #		print "rel_prj_path="+rel_prj_path+" prjconfigdir="+prjconfigdir
@@ -130,7 +130,7 @@ def parseDefines(ctx, node, dict):
 		value=node.attrib["value"]
 	if "name" in node.attrib:
 		name=node.attrib["name"]
-		dict[name]=value	
+		dict[name]=value
 	else:
        		parseError("define syntax invalid ("+nv+")");
 
@@ -143,11 +143,11 @@ def parseSettings(conf, node, ctx, lib):
        		parseError("unknown setting: "+node.tag);
 	for child in list(node):
 		if child.tag=="define":
-			parseDefines(ctx, child, lib[tag])	
+			parseDefines(ctx, child, lib[tag])
                 else:
 			parseError("unhanded element: "+child.tag)
 
-def parseDeps(node):	
+def parseDeps(node):
 	if "dep" in node.attrib:
 		dep=node.attrib["dep"].split()
 		return dep
@@ -159,7 +159,7 @@ def parseDeps(node):
 def parseLibrary(conf, node, ctx, seq_type):
 	lib_name=node.attrib["name"]
 	lib_uuid=uuid.uuid5(uuid.NAMESPACE_URL, "urn:lib:"+lib_name)
-	lib={"name": lib_name, "uuid": lib_uuid, "source": { "files": []}, "header": { "files": [], "target": "", "includes": [] }, "defines": {}, "exports": {}, "deps": parseDeps(node), "mode": "c90", "align": "", "external": False }	
+	lib={"name": lib_name, "uuid": lib_uuid, "source": { "files": []}, "header": { "files": [], "target": "", "includes": [] }, "defines": {}, "exports": {}, "deps": parseDeps(node), "mode": "c90", "align": "", "external": False }
 	ctx=updateCtx(conf, ctx, node)
 	setAttr(lib, node, "mode")
 	setAttr(lib, node, "align")
@@ -214,13 +214,13 @@ def parsePlatform(conf, node, ctx):
 		conf["platforms"][name]=platform
 	else:
 		parseError("no name given for platform")
-		
+
 
 def parseTargets(conf, node, ctx):
 	for child in list(node):
 		if child.tag=="include":
 			path=os.path.abspath(os.path.join(ctx["root"], child.attrib["path"]))
-			new_ctx=copy.copy(ctx)		
+			new_ctx=copy.copy(ctx)
 			new_ctx["root"]=os.path.dirname(path)
 			parseConfiguration(conf, path, new_ctx)
 		elif child.tag=="library":
@@ -243,7 +243,7 @@ def parseConfiguration(conf, filename, ctx):
 
 
 def depClosure2(conf, deps, ignoreExternal):
-	ret=[]	
+	ret=[]
 	gray=set(deps)
 	black=set()
 	while len(gray)>0:
@@ -283,7 +283,7 @@ def depClosure(conf, req_deps, ignoreExternal):
 #	print depClosureStr(req_deps, deps)
 #	deps.sort(depCompare)
 #	print depClosureStr(req_deps, deps)
-	ret=[]	
+	ret=[]
 	for lib in deps:
 		ret.append(lib[0]["name"])
 #	print "\n"
@@ -361,7 +361,7 @@ def generateCPPFLAGS(conf, ctx, lib, build_dir):
 	for dep_lib in conf["libraries"]:
 		if dep_lib["name"] in ctx["externals"]:
 			ext_lib=ctx["externals"][dep_lib["name"]]
-			if "external" in ext_lib and ext_lib["external"]:						
+			if "external" in ext_lib and ext_lib["external"]:
 				if "cppflags" in ext_lib:
 					cppflags=cppflags+" "+ext_lib["cppflags"]
 
@@ -433,7 +433,7 @@ def generateVCXPROJ(conf, ctx, lib, type):
 	out.write("<PreprocessorDefinitions>"+cpp_defs+"</PreprocessorDefinitions>\n" )
 	AdditionalIncludeDirectories=""
 	for dir in lib["header"]["includes"]:
-		AdditionalIncludeDirectories=AdditionalIncludeDirectories+os.path.relpath(os.path.abspath(dir), filepath)+";"	
+		AdditionalIncludeDirectories=AdditionalIncludeDirectories+os.path.relpath(os.path.abspath(dir), filepath)+";"
 	dep_dirs=gatherIncludeDirs(conf, ctx, dep_closure)
 	for dir in dep_dirs:
 		abs_path=os.path.relpath(os.path.abspath(dir), filepath)
@@ -471,7 +471,7 @@ def generateVCXPROJ(conf, ctx, lib, type):
 		out.write("<Link>\n");
 		out.write("<GenerateDebugInformation>true</GenerateDebugInformation>\n")
 		out.write("<SubSystem>Console</SubSystem>\n")
-		out.write("</Link>\n");	
+		out.write("</Link>\n");
         out.write("</ItemDefinitionGroup>\n");
 
 	out.write("<ItemDefinitionGroup Condition=\"'$(Configuration)|$(Platform)'=='Release|Win32'\">\n")
@@ -487,7 +487,7 @@ def generateVCXPROJ(conf, ctx, lib, type):
 		out.write("<SubSystem>Console</SubSystem>\n")
 		out.write("<EnableCOMDATFolding>true</EnableCOMDATFolding>\n")
 		out.write("<OptimizeReferences>true</OptimizeReferences>\n")
-		out.write("</Link>\n");	
+		out.write("</Link>\n");
         out.write("</ItemDefinitionGroup>\n");
 
 	out.write("<ItemGroup>\n");
@@ -531,7 +531,7 @@ def generateConfiguration(ctx, includes, platform):
 	ctx["platform"]=platform
 	for include in includes:
 		parseConfiguration(conf, include, ctx)
-	if ctx["platform"] not in conf["platforms"]:	
+	if ctx["platform"] not in conf["platforms"]:
 		add=generatePlatformList(conf, ctx);
 		if len(add)>0:
 			conf["platforms"][ctx["platform"]]=conf["platforms"][add[0]]
@@ -623,7 +623,7 @@ def generateExtLDFlags(conf, ctx):
 	for dep_lib in conf["libraries"]:
 		if dep_lib["name"] in ctx["externals"]:
 			ext_lib=ctx["externals"][dep_lib["name"]]
-			if "external" in ext_lib and ext_lib["external"]:						
+			if "external" in ext_lib and ext_lib["external"]:
 				if "ldflags" in ext_lib:
 					ext_ldflags=ext_ldflags+" "+ext_lib["ldflags"]
 	return ext_ldflags
@@ -681,7 +681,7 @@ def generateLibraryMakefile(conf, ctx, lib_type, lib, filename, build_dir, src_d
 	out.write("clean:\n")
 	out.write("\trm -rf $(BUILD_DIR)/lib"+lib["name"]+".a $(BUILD_DIR)/lib"+lib["name"]+getSharedExt(conf, ctx)+" $(objs_"+lib["name"]+")\n")
 	out.close()
-	
+
 def generateLibraryInclude(conf, ctx, lib, filename, build_dir, src_dir):
 	sys.stderr.write("generating "+filename+"\n")
 	if not os.path.exists(os.path.dirname(filename)):
@@ -701,7 +701,7 @@ def generateLibraryInclude(conf, ctx, lib, filename, build_dir, src_dir):
 			ln_dst=os.path.join(src_dir, dep)
 			if os.path.exists(ln_src):
 				os.remove(ln_src)
-			print "symlink("+ln_dst+", "+ln_src+")"+str(os.path.exists(ln_src))
+			print("symlink("+ln_dst+", "+ln_src+")"+str(os.path.exists(ln_src)))
 			os.symlink(ln_dst, ln_src)
 			ret.append(ln_src)
 		else:
@@ -733,20 +733,20 @@ def generateToolMakefile(conf, ctx, lib_type, tool, filename, build_dir, src_dir
 #	deps=depClosure(conf, tool["deps"], True)
 #	for dep in deps:
 #		if lib_type=="static":
-#			out.write(" $(BUILD_DIR)/lib"+ dep +".a")	
+#			out.write(" $(BUILD_DIR)/lib"+ dep +".a")
 #		if lib_type=="shared":
-#			out.write(" $(BUILD_DIR)/lib"+ dep +getSharedExt(conf, ctx))	
+#			out.write(" $(BUILD_DIR)/lib"+ dep +getSharedExt(conf, ctx))
 #	out.write("\n")
 	ext_ldflags=generateExtLDFlags(conf, ctx)
 #	ext_ldflags=""
 #	for dep_lib in conf["libraries"]:
 #		if dep_lib["name"] in ctx["externals"]:
 #			ext_lib=ctx["externals"][dep_lib["name"]]
-#			if "external" in ext_lib and ext_lib["external"]:						
+#			if "external" in ext_lib and ext_lib["external"]:
 #				if "ldflags" in ext_lib:
 #					ext_ldflags=ext_ldflags+" "+ext_lib["ldflags"]
 
-	out.write("$(BUILD_DIR)/"+tool["name"]+": $(objs_"+tool["name"]+") $("+tool["name"]+"_ld)\n")			
+	out.write("$(BUILD_DIR)/"+tool["name"]+": $(objs_"+tool["name"]+") $("+tool["name"]+"_ld)\n")
 	static_flag=""
 	if lib_type=="static" and platformSubseteqTest(ctx["platform"], "linux-*-gcc-*"):
 		static_flag=" --static"
@@ -799,7 +799,7 @@ def generateTypedMakefile(conf, ctx, lib_type):
 					out.write(" "+dep)
 			out.write("\n")
 			out.write("\t$(MAKE) -f "+"Makefile."+lib["name"]+"\n\n")
-	
+
 	# generate tools
 	for tool in conf["tools"]:
 		makefile=os.path.join(obj_dir, "Makefile."+tool["name"])
@@ -874,7 +874,7 @@ def generateTypedMakefile(conf, ctx, lib_type):
 			out.write("\t@mkdir -p "+os.path.dirname(target)+"\n")
 			out.write("\t@cp "+os.path.join(obj_dir, tool["name"]+tool_ext)+" "+target+"\n")
 	target=base+"lib/pkgconfig/libopc.pc"
-	out.write("\t@mkdir -p "+os.path.dirname(target)+"\n")	
+	out.write("\t@mkdir -p "+os.path.dirname(target)+"\n")
 	out.write("\t@cp "+os.path.join(ctx["base"], "config", "libopc.pc")+" "+target+"\n")
 	out.close()
 
@@ -882,8 +882,8 @@ def generateTypedMakefile(conf, ctx, lib_type):
 def generateTypedMakefiles(ctx, source, lib_types):
 	for platform in ctx["platforms"]:
 		conf=generateConfiguration(ctx, [source], platform)
-		if ctx["platform"] in conf["platforms"]:	
-			for lib_type in lib_types:		
+		if ctx["platform"] in conf["platforms"]:
+			for lib_type in lib_types:
 				generateTypedMakefile(conf, ctx, lib_type)
 		else:
 			parseError("platform "+ctx["platform"]+" is unknown.")
@@ -893,43 +893,43 @@ def generateTypedMakefiles(ctx, source, lib_types):
 	out=open("Makefile", "w")
 	out.write(".PHONY: all clean");
 	for platform in ctx["platforms"]:
-		for lib_type in lib_types:		
+		for lib_type in lib_types:
 			out.write(" "+platform+"."+lib_type);
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		out.write(" "+lib_type);
 	out.write("\n");
 	out.write("all:");
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		out.write(" "+lib_type);
 	out.write("\n");
 
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		out.write(lib_type+":");
 		for platform in ctx["platforms"]:
 			out.write(" "+platform+"."+lib_type);
 		out.write("\n");
 
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		for platform in ctx["platforms"]:
 			out.write(platform+"."+lib_type+": build"+os.sep+platform+os.sep+lib_type+os.sep+"Makefile\n");
 			out.write("\t@$(MAKE) -C build"+os.sep+platform+os.sep+lib_type+"\n");
 	out.write("clean:\n")
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		for platform in ctx["platforms"]:
-			out.write("\t@$(MAKE) -C build"+os.sep+platform+os.sep+lib_type+" clean\n");	
+			out.write("\t@$(MAKE) -C build"+os.sep+platform+os.sep+lib_type+" clean\n");
 	out.write("package:\n")
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		for platform in ctx["platforms"]:
 			out.write("\t@$(MAKE) -C build"+os.sep+platform+os.sep+lib_type+" package\n")
 	out.write("install:\n")
-	for lib_type in lib_types:		
+	for lib_type in lib_types:
 		for platform in ctx["platforms"]:
 			out.write("\t@$(MAKE) -C build"+os.sep+platform+os.sep+lib_type+" install\n")
 	out.close()
 
 def dumpEnvironment(ctx, includes, platform):
 	conf=generateConfiguration(ctx, includes, platform)
-	if platform in conf["platforms"]:			
+	if platform in conf["platforms"]:
 		p=conf["platforms"][platform]
 #		print(str(p))
 		host=""
@@ -946,7 +946,7 @@ def dumpEnvironment(ctx, includes, platform):
 		parseError("platform "+platform+" is unknown.")
 		sys.stderr.write("available platforms:");
 		for platform in conf["platforms"]:
-			sys.stderr.write(platform)	
+			sys.stderr.write(platform)
 
 def set_external_flag(ctx, lib, flag, value):
 #	sys.stderr.write("SETTING "+lib+" "+flag+" "+str(value)+"\n")
@@ -975,7 +975,7 @@ def generateZipPackage(ctx, source, lib_type, install_zip):
 		tool_ext=".exe"
 		lib_exts=[".lib"]
 		if (lib_type=="shared"):
-			shared_exts.append(".dll")		
+			shared_exts.append(".dll")
 		lib_prefix=""
 	else:
 		obj_dir=os.path.join("build", ctx["platform"], lib_type)
@@ -1048,16 +1048,16 @@ def usage():
 	print("          [--print-env \"linux-release-gcc\"]")
 	print("          [--package \"xyz.zip/\"]")
 
-if __name__ == "__main__":	
+if __name__ == "__main__":
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "h", ["help", "include=", "config-dir=", "print-env=", 
-			"package=", "install=", 
+		opts, args = getopt.getopt(sys.argv[1:], "h", ["help", "include=", "config-dir=", "print-env=",
+			"package=", "install=",
 			"with-zlib-cppflags=", "with-zlib-ldflags=", "with-zlib=",
 			"with-libxml-cppflags=", "with-libxml-ldflags=", "with-libxml=",
 			"type="])
 	except getopt.GetoptError, err:
 		# print help information and exit:
-		print str(err) # will print something like "option -a not recognized"
+		print(str(err))# will print something like "option -a not recognized"
 		usage()
 		sys.exit(2)
 	ctx={ "base": os.path.abspath(os.curdir), "root": os.path.abspath(os.curdir), "platform": "?-?-?", "platforms": [], "externals": {} }
@@ -1114,11 +1114,10 @@ if __name__ == "__main__":
 			os.makedirs("build")
 		f=open(os.path.join("build", "configure.ctx"), "w")
 		f.write(str(ctx))
-		f.close()		
+		f.close()
 		for include in includes:
 			ctx["root"]=os.path.abspath(os.path.split(include)[0])
 			generateTypedMakefiles(ctx, include, lib_types)
 
 	for platform in dump_env:
 		dumpEnvironment(ctx, includes, platform)
-

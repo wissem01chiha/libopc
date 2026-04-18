@@ -12,4 +12,4 @@ override_dh_auto_configure:
 	./configure --with-zlib=yes --with-zlib-ldflags="`pkg-config zlib --libs`" --with-libxml=yes --with-libxml-cppflags="`pkg-config libxml-2.0 --cflags`" --with-libxml-ldflags="`pkg-config libxml-2.0 --libs`" --arch=any --target=release
 
 %:
-	dh $@ 
+	dh $@

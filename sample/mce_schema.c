@@ -71,8 +71,8 @@ typedef struct LINE_TOKEN_DECLARATION {
 } LineTokenDeclaration;
 
 static LineTokenDeclaration s_token[] = {
-    { LINE_TOKEN_ID_DEF, "mce_def"}, 
-    { LINE_TOKEN_ID_REF, "mce_ref"}, 
+    { LINE_TOKEN_ID_DEF, "mce_def"},
+    { LINE_TOKEN_ID_REF, "mce_ref"},
     { LINE_TOKEN_ID_START_DOCUMENT, "mce_start_document" },
     { LINE_TOKEN_ID_END_DOCUMENT, "mce_end_document" },
     { LINE_TOKEN_ID_START_ELEMENT, "mce_start_element" },
@@ -135,7 +135,7 @@ typedef struct SOURCE_CONTEXT {
 
 
 static void addBinding(SourceContext *sc, const xmlChar *p, const xmlChar *ns) {
-    puint32_t i=0; 
+    puint32_t i=0;
     while(i<sc->binding_len && 0!=xmlStrcmp(sc->binding_array[i].p, p)) i++;
     if (i==sc->binding_len) {
         sc->binding_array=(SourceQName*)xmlRealloc(sc->binding_array, (sc->binding_len+1)*sizeof(SourceQName));
@@ -152,7 +152,7 @@ static void addBinding(SourceContext *sc, const xmlChar *p, const xmlChar *ns) {
 }
 
 static xmlChar *getBinding(SourceContext *sc, const xmlChar *p) {
-    puint32_t i=0; 
+    puint32_t i=0;
     while(i<sc->binding_len && 0!=xmlStrcmp(sc->binding_array[i].p, p)) i++;
     if (i<sc->binding_len) {
         return sc->binding_array[i].ns;
@@ -432,7 +432,7 @@ static pbool_t parseStartDocument(SourceContext *sc, LineTokenInstance *ti) {
         if (parseStartDeclaration(sc, ti, &sc->decl_array, &sc->decl_len)) {
             return (LINE_TOKEN_ID_END_DOCUMENT==ti->id?LINE_TOKEN_ID_INVALID!=readLineToken(sc, ti):PFALSE); // consume end_document
         }
-    } 
+    }
     return PFALSE;
 }
 
@@ -449,7 +449,7 @@ static pbool_t parseDefinition(SourceContext *sc, LineTokenInstance *ti) {
             parseDeclarations(sc, ti, def_id); // children
             return PTRUE;
         }
-    } 
+    }
     return PFALSE;
 }
 

@@ -1,32 +1,32 @@
 /**
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
  notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
- notice, this list of conditions and the following disclaimer in 
- the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
  distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
- may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+ may be used to endorse or promote products derived from this
  software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
@@ -114,16 +114,16 @@ static void generate_relations(opcContainer *c, FILE *out, opcPart root) {
             if (OPC_PART_INVALID!=internal_target) {
                 char part[OPC_MAX_PATH]="";
                 normalize_name(part, internal_target, sizeof(part));
-                fprintf(out, "     %sopcRelationAdd(c, %s, _X(\"%s%s\"), create_%s(c), _X(\"%s\"));\n", 
-                    (OPC_PART_INVALID==root?"":"     "), 
-                    (OPC_PART_INVALID==root?"OPC_PART_INVALID":"ret"), 
+                fprintf(out, "     %sopcRelationAdd(c, %s, _X(\"%s%s\"), create_%s(c), _X(\"%s\"));\n",
+                    (OPC_PART_INVALID==root?"":"     "),
+                    (OPC_PART_INVALID==root?"OPC_PART_INVALID":"ret"),
                     prefix, buf, part, type);
             } else {
                 xmlChar *external_target=xmlStrEscape(opcRelationGetExternalTarget(c, root, rel));
                 if (NULL!=external_target) {
-                    fprintf(out, "     %sopcRelationAddExternal(c, %s, _X(\"%s%s\"), _X(\"%s\"), _X(\"%s\"));\n", 
-                        (OPC_PART_INVALID==root?"":"     "), 
-                        (OPC_PART_INVALID==root?"OPC_PART_INVALID":"ret"), 
+                    fprintf(out, "     %sopcRelationAddExternal(c, %s, _X(\"%s%s\"), _X(\"%s\"), _X(\"%s\"));\n",
+                        (OPC_PART_INVALID==root?"":"     "),
+                        (OPC_PART_INVALID==root?"OPC_PART_INVALID":"ret"),
                         prefix, buf,
                         external_target,
                         type);
@@ -354,7 +354,7 @@ int main( int argc, const char* argv[] )
         }
         opcFreeLibrary();
     } else if (2==argc) {
-        printf("ERROR: initialization of libopc failed.\n");    
+        printf("ERROR: initialization of libopc failed.\n");
         err=OPC_ERROR_STREAM;
     } else {
         printf("opc_generate CONTAINERNAME CFILENAME\n\n");
@@ -365,6 +365,5 @@ int main( int argc, const char* argv[] )
 #ifdef WIN32
     OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return (OPC_ERROR_NONE==err?0:3);	
+    return (OPC_ERROR_NONE==err?0:3);
 }
-

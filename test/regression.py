@@ -10,10 +10,10 @@ import shutil
 import platform as python_platform
 
 def msg(msg):
-	print msg+"...",
+	print(msg+"..."),
 
 def result(msg):
-	print msg;
+	print(msg)
 
 def failure(msg):
 	type, value = sys.exc_info()[:2]
@@ -96,9 +96,9 @@ def call(path, pre, args, outfile, post, attr):
 	try:
 		env={}
 		if TARGET_TYPE=="shared":
-			if python_platform.system().lower()=="darwin":			
+			if python_platform.system().lower()=="darwin":
 				env["DYLD_LIBRARY_PATH"]=os.path.abspath(BUILD_DIR)
-			elif python_platform.system().lower()=="linux":			
+			elif python_platform.system().lower()=="linux":
 				env["LD_LIBRARY_PATH"]=os.path.abspath(BUILD_DIR)
 		msg("executing "+path)
 		if os.path.exists(tmp("stderr.txt")):
@@ -117,10 +117,10 @@ def call(path, pre, args, outfile, post, attr):
 		result("OK")
 	except:
 		failure(None)
-	
+
 def normlinebreak(path):
 	try:
-		msg("normalize line breaks "+path+"...")		
+		msg("normalize line breaks "+path+"...")
 		newlines = []
 		changed  = False
 		for line in open(path, 'rb').readlines():
@@ -135,12 +135,12 @@ def normlinebreak(path):
 			result("OK")
 	except:
 		failure(None)
-	
+
 
 def regr(regrpath, path, normalize):
 	if normalize:
 		normlinebreak(regrpath)
-		normlinebreak(path)	
+		normlinebreak(path)
 	msg("regression testing "+path+" against "+regrpath)
 	eq=filecmp.cmp(regrpath, path)
 	if (eq):
@@ -163,8 +163,8 @@ def compile(path):
 			rtl="/MDd"
 		else:
 			rtl="/MD"
-		cl_args=["cl", 
-			os.path.abspath(path), 
+		cl_args=["cl",
+			os.path.abspath(path),
 			"/Fo"+obj,
 			"/TP", "/c", rtl,
 			"/I..\\..\\config\\win32-msvc\\zlib-1.2.5",
@@ -180,7 +180,7 @@ def compile(path):
 			"/D","_UNICODE",
 			"/D", "UNICODE" ]
 		link_args=["link", "/OUT:"+os.path.abspath(exe),  os.path.abspath(os.path.splitext(path)[0]+".obj"),"/NOLOGO", "/MACHINE:X86",
-			"kernel32.lib", "user32.lib", "gdi32.lib", "winspool.lib", "comdlg32.lib", "advapi32.lib", "shell32.lib", "ole32.lib", "oleaut32.lib", "uuid.lib", "odbc32.lib", "odbccp32.lib", 
+			"kernel32.lib", "user32.lib", "gdi32.lib", "winspool.lib", "comdlg32.lib", "advapi32.lib", "shell32.lib", "ole32.lib", "oleaut32.lib", "uuid.lib", "odbc32.lib", "odbccp32.lib",
 			"mce.lib", "opc.lib", "plib.lib", "zlib.lib", "xml.lib" ]
 		cwd=os.getcwd()
 		os.chdir(tmp(""))

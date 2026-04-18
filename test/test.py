@@ -25,7 +25,7 @@ def opc_mem_test(path):
 def opc_type_test(path):
 	test.call(test.build("opc_type"), [], [test.docs(path)], test.tmp(path+".opc_type"), [], {})
 	test.regr(test.docs(path+".opc_type"), test.tmp(path+".opc_type"), True)
-	
+
 def opc_relation_test(path):
 	test.call(test.build("opc_relation"), [], [test.docs(path)], test.tmp(path+".opc_relation"), [], {})
 	test.regr(test.docs(path+".opc_relation"), test.tmp(path+".opc_relation"), True)
@@ -33,7 +33,7 @@ def opc_relation_test(path):
 	test.regr(test.docs(path+".opc_relation.rId1"), test.tmp(path+".opc_relation.rId1"), True)
 	test.call(test.build("opc_relation"), [], [test.docs(path), "word/document.xml", "rId1"], test.tmp(path+".opc_relation.word-document.rId1"), [], {})
 	test.regr(test.docs(path+".opc_relation.word-document.rId1"), test.tmp(path+".opc_relation.word-document.rId1"), True)
-	
+
 def opc_image_test(path):
 	test.call(test.build("opc_image"), [], [test.docs(path), test.tmp("")], test.tmp(path+".opc_image"), [], {})
 	test.regr(test.docs(path+".opc_image"), test.tmp(path+".opc_image"), True)
@@ -152,7 +152,7 @@ if __name__ == "__main__":
 		opts, args = getopt.getopt(sys.argv[1:], "h", ["help", "target=", "generate=", "skip", "type="])
 	except getopt.GetoptError, err:
 		# print help information and exit:
-		print str(err) # will print something like "option -a not recognized"
+		print(str(err)) # will print something like "option -a not recognized"
 		usage()
 		sys.exit(2)
 	for o, a in opts:
@@ -170,9 +170,9 @@ if __name__ == "__main__":
 	if None==target_type and "nt"==os.name:
 		target_type=""
 	if None==target_type:
-		print "please specify target type , e.g. --type=static or --type=shared"
+		print("please specify target type , e.g. --type=static or --type=shared")
 	if None==target_mode:
-		print "please specify target mode, e.g. --target=debug"
+		print("please specify target mode, e.g. --target=debug")
 		sys.exit(2)
 	else:
 		test.init(target_mode, target_type)
@@ -277,7 +277,7 @@ if __name__ == "__main__":
 		for item in skip_list:
 			skip_f.write(item+"\n")
 		skip_f.flush()
-			
+
 		suitename=os.path.split(generate_path)[1]
 		basedir=os.path.split(generate_path)[0]
 		for root, dirs, files in os.walk(generate_path):
@@ -293,7 +293,7 @@ if __name__ == "__main__":
 					skip=False
 #				print f+" "+str(ignore)
 				if not(ignore) and not(skip) and (".docx"==ext or ".xlsx"==ext or ".pptx"==ext or ".xps"==ext):
-					print "opc_generate_test("+basedir+", "+src+")"
+					print("opc_generate_test("+basedir+", "+src+")")
 					opc_generate_test(basedir, src)
 					skip_f.write(f+"\n")
 					skip_f.flush()

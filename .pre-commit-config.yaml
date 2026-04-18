@@ -9,3 +9,4 @@ repos:
     rev: 22.10.0
     hooks:
     -   id: black
+        exclude: ^(test/regression\.py|test/validate\.py|test/test\.py|generate\.py)$

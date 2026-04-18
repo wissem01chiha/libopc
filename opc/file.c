@@ -1,32 +1,32 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
  notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
- notice, this list of conditions and the following disclaimer in 
- the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
  distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
- may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+ may be used to endorse or promote products derived from this
  software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <opc/file.h>
@@ -113,7 +113,7 @@ static opc_uint32_t opcFileLength(void *iocontext) {
 struct __opcZipMemContext {
     const opc_uint8_t *data;
     opc_uint32_t data_len;
-    opc_uint32_t data_pos;    
+    opc_uint32_t data_pos;
 };
 
 static void *opcMemOpen(const opc_uint8_t *data, opc_uint32_t data_len) {
@@ -137,7 +137,7 @@ static int opcMemRead(void *iocontext, char *buffer, int len) {
     opc_uint32_t max=(mem->data_pos+len<=mem->data_len?len:mem->data_len-mem->data_pos);
     OPC_ASSERT(max>=0 && mem->data_pos+max<=mem->data_len);
     memcpy(buffer, mem->data+mem->data_pos, max);
-    mem->data_pos+=max;    
+    mem->data_pos+=max;
     return max;
 }
 
@@ -193,14 +193,14 @@ opc_error_t opcFileInitIOFile(opcIO_t *io, const xmlChar *filename, int flags) {
     void *iocontext=opcFileOpen(filename, flags);
     if (iocontext!=NULL) {
         ret=opcFileInitIO(io,
-                          opcFileRead, 
-                          opcFileWrite, 
-                          opcFileClose, 
-                          opcFileSeek, 
-                          opcFileTrim, 
+                          opcFileRead,
+                          opcFileWrite,
+                          opcFileClose,
+                          opcFileSeek,
+                          opcFileTrim,
                           opcFileFlush,
-                          iocontext, 
-                          opcFileLength(iocontext), 
+                          iocontext,
+                          opcFileLength(iocontext),
                           flags);
     } else {
         ret=OPC_ERROR_STREAM;
@@ -213,15 +213,15 @@ opc_error_t opcFileInitIOMemory(opcIO_t *io, const opc_uint8_t *data, opc_uint32
     opc_error_t ret=OPC_ERROR_NONE;
     void *iocontext=opcMemOpen(data, data_len);
     if (iocontext!=NULL) {
-        ret=opcFileInitIO(io, 
-                          opcMemRead, 
-                          opcMemWrite, 
-                          opcMemClose, 
-                          opcMemSeek, 
-                          opcMemTrim, 
-                          opcMemFlush, 
-                          iocontext, 
-                          data_len, 
+        ret=opcFileInitIO(io,
+                          opcMemRead,
+                          opcMemWrite,
+                          opcMemClose,
+                          opcMemSeek,
+                          opcMemTrim,
+                          opcMemFlush,
+                          iocontext,
+                          data_len,
                           flags);
     } else {
         ret=OPC_ERROR_STREAM;

@@ -131,14 +131,14 @@ execConfigure() {
 	rm -rf "$BUILDDIR/copy/$PACKAGE"
 }
 
-if [ x$PLATFORM = x ]; then 
+if [ x$PLATFORM = x ]; then
 	PLATFORM="$OS-$TARGET-$TOOLCHAIN-$ARCH"
 fi
 #if [ x$CC = x ]; then
 #	CC=${PLATFORM##*-}
 #fi
 #export CC
-if [ x$PYTHON_PATH = x ]; then 
+if [ x$PYTHON_PATH = x ]; then
 	PYTHON_PATH=python
 fi
 
@@ -152,10 +152,10 @@ if [[ $PLATFORM =~ ^[^-]+-[^-]+-[^-]+-[^-]+$ ]]; then
 			CONFIG_OPT="--host=$HOST"
 		fi
 		execConfigure "." "plib" "$PLIBCONFIG" "$PLIBFILES" "$CONFIG_OPT"
-		if [ x"no" == x$EXTERNAL_ZLIB ]; then 
+		if [ x"no" == x$EXTERNAL_ZLIB ]; then
 			execConfigure "third_party" "zlib-1.2.5" "$ZLIBCONFIG" "$ZLIBFILES" ""
 		fi
-		if [ x"no" == x$EXTERNAL_LIBXML ]; then 
+		if [ x"no" == x$EXTERNAL_LIBXML ]; then
 			execConfigure "third_party" "libxml2-2.7.7" "$LIBXMLCONFIG" "$LIBXMLFILES" "$CONFIG_OPT"
 		fi
 		$PYTHON_PATH generate.py --include Makefile.xml --config-dir $BUILDDIR --with-zlib=$EXTERNAL_ZLIB --with-zlib-cppflags="$EXTERNAL_ZLIB_CPPFLAGS" --with-zlib-ldflags="$EXTERNAL_ZLIB_LDFLAGS" --with-libxml=$EXTERNAL_LIBXML --with-libxml-cppflags="$EXTERNAL_LIBXML_CPPFLAGS" --with-libxml-ldflags="$EXTERNAL_LIBXML_LDFLAGS" $PLATFORM
@@ -171,4 +171,3 @@ else
 fi
 echo "Configured platform $PLATFORM."
 echo "Executables will be generated in \"build/$PLATFORM\"."
-

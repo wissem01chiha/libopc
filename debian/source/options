@@ -6,4 +6,3 @@ tar-ignore = .git
 tar-ignore = *.pyc
 tar-ignore = build
 tar-ignore = Makefile
-

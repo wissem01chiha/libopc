@@ -1,14 +1,14 @@
 # Libopc
 
-*Libopc* is a C library for processing [ISO/IEC 29500‑2](https://www.iso.org/standard/77818.html) (Open Packaging Conventions) files.  
+*Libopc* is a C library for processing [ISO/IEC 29500‑2](https://www.iso.org/standard/77818.html) (Open Packaging Conventions) files.
 It was originally developed by [Florian Reuter](https://github.com/freuter).
 
-The OPC file format is natively supported in the Windows SDK starting with Windows 7, via the [Packaging](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/opc/packaging?redirectedfrom=MSDN) API.  
+The OPC file format is natively supported in the Windows SDK starting with Windows 7, via the [Packaging](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/opc/packaging?redirectedfrom=MSDN) API.
 *Libopc* aims to provide a free, non‑Windows solution for manipulating such files in C and C++ applications.
 
-**Note:** *Libopc* focuses on packaging files and managing relationship parts.  
-For example, inserting an image requires setting up relationships and adding the image into the package.  
-It does **not** support editing the actual document data (e.g., PNG, JPEG, etc.).  
+**Note:** *Libopc* focuses on packaging files and managing relationship parts.
+For example, inserting an image requires setting up relationships and adding the image into the package.
+It does **not** support editing the actual document data (e.g., PNG, JPEG, etc.).
 For that, we recommend using your own library/tool, as mentioned in [issue #3](https://github.com/freuter/libopc/issues/3).
 
 ---
@@ -27,7 +27,7 @@ For that, we recommend using your own library/tool, as mentioned in [issue #3](h
 
 ## Downloads
 
-Version `libopc‑1.0.0` is not yet released.  
+Version `libopc‑1.0.0` is not yet released.
 Use Git to get the latest updates from the master branch:
 
 ```bash

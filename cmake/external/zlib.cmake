@@ -6,7 +6,7 @@ else()
     include(FetchContent)
     FetchContent_Declare(
         zlib
-        URL https://github.com/madler/zlib/releases/download/v1.3.2/zlib132.zip 
+        URL https://github.com/madler/zlib/releases/download/v1.3.2/zlib132.zip
     )
     set(ZLIB_BUILD_SHARED OFF)
     set(ZLIB_BUILD_TESTING OFF)

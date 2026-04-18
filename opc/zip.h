@@ -1,34 +1,34 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
-   notice, this list of conditions and the following disclaimer in 
-   the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
    distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
-   may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+   may be used to endorse or promote products derived from this
    software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
 */
 /** @file opc/zip.h
   The ZIP file backend of an OPC container.
@@ -42,7 +42,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif    
+#endif
 
     /**
      Default growth hint of an OPC stream.
@@ -71,7 +71,7 @@ extern "C" {
      Holds all information of a ZIP segment.
      */
     typedef struct OPC_ZIP_SEGMENT_INFO_STRUCT {
-        xmlChar name[OPC_MAX_PATH]; 
+        xmlChar name[OPC_MAX_PATH];
         opc_uint32_t name_len;
         opc_uint32_t segment_number;
         opc_bool_t   last_segment;
@@ -123,7 +123,7 @@ extern "C" {
      */
     typedef opc_error_t (opcZipSegmentReleaseCallback)(opcZip *zip, opc_uint32_t segment_id);
 
-    /** 
+    /**
      Closes the ZIP archive \c zip and will call \c releaseCallback for every segment to give the implementer a chance
      to free user resources.
      */
@@ -157,10 +157,10 @@ extern "C" {
       Create a segment with the given parameters.
       \return Returns the segment_id.
       */
-    opc_uint32_t opcZipCreateSegment(opcZip *zip, 
-                                     const xmlChar *partName, 
-                                     opc_bool_t relsSegment, 
-                                     opc_uint32_t segment_size, 
+    opc_uint32_t opcZipCreateSegment(opcZip *zip,
+                                     const xmlChar *partName,
+                                     opc_bool_t relsSegment,
+                                     opc_uint32_t segment_size,
                                      opc_uint32_t growth_hint,
                                      opc_uint16_t compression_method,
                                      opc_uint16_t bit_flag);
@@ -178,7 +178,7 @@ extern "C" {
     opc_error_t opcZipCloseInputStream(opcZip *zip, opcZipInputStream *stream);
 
     /**
-     Read maximal \c buf_len bytes from the input stream into \buf. 
+     Read maximal \c buf_len bytes from the input stream into \buf.
      \return Returns the number of bytes read.
      */
     opc_uint32_t opcZipReadInputStream(opcZip *zip, opcZipInputStream *stream, opc_uint8_t *buf, opc_uint32_t buf_len);
@@ -186,14 +186,14 @@ extern "C" {
 
     /**
       Creates an output stream for the segment with \c segment_id.
-      If \c *segment_id is -1 then a new segment will be created. 
+      If \c *segment_id is -1 then a new segment will be created.
       Otherwise the segment with \c *segment_id will be overwritten.
      */
-    opcZipOutputStream *opcZipCreateOutputStream(opcZip *zip, 
-                                             opc_uint32_t *segment_id, 
-                                             const xmlChar *partName, 
-                                             opc_bool_t relsSegment, 
-                                             opc_uint32_t segment_size, 
+    opcZipOutputStream *opcZipCreateOutputStream(opcZip *zip,
+                                             opc_uint32_t *segment_id,
+                                             const xmlChar *partName,
+                                             opc_bool_t relsSegment,
+                                             opc_uint32_t segment_size,
                                              opc_uint32_t growth_hint,
                                              opc_uint16_t compression_method,
                                              opc_uint16_t bit_flag);
@@ -205,14 +205,14 @@ extern "C" {
      */
     opcZipOutputStream *opcZipOpenOutputStream(opcZip *zip, opc_uint32_t *segment_id);
 
-    /** 
+    /**
       Will close the stream and free all resources. Additionally the new segment id will be stored in \c *segment_id.
       \see opcZipOpenOutputStream
       */
     opc_error_t opcZipCloseOutputStream(opcZip *zip, opcZipOutputStream *stream, opc_uint32_t *segment_id);
 
     /**
-     Write \c buf_len bytes to \c buf. 
+     Write \c buf_len bytes to \c buf.
      \return Returns the number of bytes written.
      */
     opc_uint32_t opcZipWriteOutputStream(opcZip *zip, opcZipOutputStream *stream, const opc_uint8_t *buf, opc_uint32_t buf_len);
@@ -220,7 +220,7 @@ extern "C" {
     /**
      Returns the first segment id or -1.
      Use the following code to iterarte through all segments.
-     \code 
+     \code
      for(opc_uint32_t segment_id=opcZipGetFirstSegmentId(zip);
          -1!=segment_id;
          segment_id=opcZipGetNextSegmentId(zip, segment_id) {
@@ -250,6 +250,6 @@ extern "C" {
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif    
-        
+#endif
+
 #endif /* OPC_ZIP_H */

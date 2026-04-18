@@ -21,11 +21,10 @@ Package: libopc
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Library for handling ISO/IEC 29500 container
- The Open Packaging Convention (OPC) is part of the ISO/IEC 29500 specification 
- which standardizes word-processing, spreadsheet and presentation documents. A 
+ The Open Packaging Convention (OPC) is part of the ISO/IEC 29500 specification
+ which standardizes word-processing, spreadsheet and presentation documents. A
  prominent implementer of the new standard is Microsoft Office Version 2007 and
- beyond. Every .docx, .xslx, .pptx document is an OPC container. Libopc has 
+ beyond. Every .docx, .xslx, .pptx document is an OPC container. Libopc has
  functions to read/write OPC container.
  Another part of ISO/IEC 29500 is Markup Compatibility and Extensibility (MCE).
  Libopc also has features to parse and generate XML markup compatible with MCE.
-

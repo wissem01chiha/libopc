@@ -1,37 +1,37 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
-   notice, this list of conditions and the following disclaimer in 
-   the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
    distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
-   may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+   may be used to endorse or promote products derived from this
    software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
 */
 /** @file mce/textreader.h
- 
+
  */
 #ifndef MCE_TEXTREADER_H
 #define MCE_TEXTREADER_H
@@ -77,8 +77,8 @@ extern "C" {
     */
     int mceTextReaderNext(mceTextReader_t *mceTextReader);
 
-    /** 
-      Creates an mceTextReader from an XmlTextReader. 
+    /**
+      Creates an mceTextReader from an XmlTextReader.
       \code
       mceTextReader reader;
       mceTextReaderInit(&reader, xmlNewTextReaderFilename("sample.xml"));
@@ -96,7 +96,7 @@ extern "C" {
     */
     int mceTextReaderCleanup(mceTextReader_t *mceTextReader);
 
-    /** 
+    /**
       Reads all events \c mceTextReader and pipes them to \writer.
       \code
       mceTextReader reader;
@@ -153,7 +153,7 @@ extern "C" {
 #define mce_start_document(_reader_) \
     if (NULL!=(_reader_)) {            \
         mceTextReaderRead(_reader_); \
-        if (0)                     
+        if (0)
 
 /**
   \see mce_start_document.
@@ -170,33 +170,33 @@ extern "C" {
   \hideinitializer
   */
 #define mce_start_choice(_reader_)  \
-    if (0)                          
+    if (0)
 
 /**
   \see mce_start_choice
   \hideinitializer
   */
-#define mce_end_choice(_reader_) 
+#define mce_end_choice(_reader_)
 
 
 /**
-  Skips the attributes. 
+  Skips the attributes.
   \see mce_match_element.
   \hideinitializer
 */
 #define mce_skip_attributes(_reader_) \
     mce_start_attributes(_reader_) {  \
-    } mce_end_attributes(_reader_);   
+    } mce_end_attributes(_reader_);
 
 
 /**
-  Skips the attributes. 
+  Skips the attributes.
   \see mce_match_attribute.
   \hideinitializer
 */
 #define mce_skip_children(_reader_) \
     mce_start_children(_reader_) {  \
-    } mce_end_children(_reader_);   
+    } mce_end_children(_reader_);
 
 /**
   \see mce_start_element.
@@ -205,7 +205,7 @@ extern "C" {
 #define mce_start_children(_reader_)                  \
 if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
     mceTextReaderRead(_reader_); do {                 \
-        if (0)                                        
+        if (0)
 
 /**
   \see mce_start_element.
@@ -219,7 +219,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
         }                                                                               \
     } while(XML_READER_TYPE_END_ELEMENT!=xmlTextReaderNodeType((_reader_)->reader) &&     \
             XML_READER_TYPE_NONE!=xmlTextReaderNodeType((_reader_)->reader));             \
-} /* if (!xmlTextReaderIsEmptyElement(reader->reader)) */                               
+} /* if (!xmlTextReaderIsEmptyElement(reader->reader)) */
 
 
 /**
@@ -229,7 +229,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
   void handleElement(reader) {
     mce_start_choice(reader) {
         mce_start_element(reader, _X("ns"), _X("element")) {
-            
+
         } mce_end_element(reader)
     } mce_end_choice(reader);
   }
@@ -252,7 +252,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
 #define mce_match_element(_reader_, ns, ln)                                                       \
     } else if (XML_READER_TYPE_ELEMENT==xmlTextReaderNodeType((_reader_)->reader)                 \
             && (NULL==ns || 0==xmlStrcmp(ns, xmlTextReaderConstNamespaceUri((_reader_)->reader))) \
-            && (NULL==ln || 0==xmlStrcmp(ln, xmlTextReaderConstLocalName((_reader_)->reader)))) { 
+            && (NULL==ln || 0==xmlStrcmp(ln, xmlTextReaderConstLocalName((_reader_)->reader)))) {
 
 
 /**
@@ -283,14 +283,14 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
   \hideinitializer
 */
 #define mce_start_element(_reader_, ns, ln) \
-    mce_match_element(_reader_, ns, ln)     
+    mce_match_element(_reader_, ns, ln)
 
 /**
   \see mce_start_element.
   \hideinitializer
 */
 #define mce_end_element(_reader_) \
-    mceTextReaderNext(_reader_)   
+    mceTextReaderNext(_reader_)
 
 /**
   Matches #TEXT without consuming it.
@@ -306,7 +306,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
   \hideinitializer
 */
 #define mce_start_text(_reader_) \
-    mce_match_text(_reader_)      
+    mce_match_text(_reader_)
 
 /**
   \see mce_start_element.
@@ -322,7 +322,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
 #define mce_start_attributes(_reader_)                            \
     if (1==xmlTextReaderMoveToFirstAttribute((_reader_)->reader)) { \
         do {                                                      \
-            if (0)                                                
+            if (0)
 
 /**
   \see mce_start_element.
@@ -331,7 +331,7 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
 #define mce_end_attributes(_reader_)                                    \
             else { /* skipped attribute */ }                            \
         } while(1==xmlTextReaderMoveToNextAttribute((_reader_)->reader)); \
-    xmlTextReaderMoveToElement((_reader_)->reader); }                     
+    xmlTextReaderMoveToElement((_reader_)->reader); }
 
 /**
   Helper macro to match an attribute. Usefull for calling code in a seperate function:
@@ -362,14 +362,14 @@ if (!xmlTextReaderIsEmptyElement((_reader_)->reader)) { \
 */
 #define mce_match_attribute(_reader_, ns, ln)                                                   \
     } else if ((NULL==ns || 0==xmlStrcmp(ns, xmlTextReaderConstNamespaceUri((_reader_)->reader))) \
-            && (NULL==ln || 0==xmlStrcmp(ln, xmlTextReaderConstLocalName((_reader_)->reader)))) { 
+            && (NULL==ln || 0==xmlStrcmp(ln, xmlTextReaderConstLocalName((_reader_)->reader)))) {
 
 /**
   \see mce_start_element.
   \hideinitializer
 */
 #define mce_start_attribute(_reader_, ns, ln) \
-    mce_match_attribute(_reader_, ns, ln) 
+    mce_match_attribute(_reader_, ns, ln)
 
 /**
   \see mce_start_element.

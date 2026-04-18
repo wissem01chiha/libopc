@@ -1,48 +1,48 @@
 /*
  Copyright (c) 2010, Florian Reuter
  All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without 
- modification, are permitted provided that the following conditions 
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
  are met:
- 
- * Redistributions of source code must retain the above copyright 
+
+ * Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright 
-   notice, this list of conditions and the following disclaimer in 
-   the documentation and/or other materials provided with the 
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
    distribution.
- * Neither the name of Florian Reuter nor the names of its contributors 
-   may be used to endorse or promote products derived from this 
+ * Neither the name of Florian Reuter nor the names of its contributors
+   may be used to endorse or promote products derived from this
    software without specific prior written permission.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
- COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
 */
 /** @file opc/container.h
 
- The container.h module has the fundamental methods for dealing with ZIP-based OPC container. 
- 
- OPC container can be opened in READ-ONLY mode, WRITE-ONLY mode, READ/WRITE mode, TEMPLATE mode and TRANSITION mode. 
- The most notable mode is the READ/WRITE mode, which gives you concurrent stream-based READ and WRITE access to a 
- single ZIP-based OPC container. This is achieved without the use of temporary files by taking advantage of the 
+ The container.h module has the fundamental methods for dealing with ZIP-based OPC container.
+
+ OPC container can be opened in READ-ONLY mode, WRITE-ONLY mode, READ/WRITE mode, TEMPLATE mode and TRANSITION mode.
+ The most notable mode is the READ/WRITE mode, which gives you concurrent stream-based READ and WRITE access to a
+ single ZIP-based OPC container. This is achieved without the use of temporary files by taking advantage of the
  OPC specific “interleave” mode. \see http://standards.iso.org/ittf/PubliclyAvailableStandards/c051459_ISOIEC_29500-2_2008(E).zip
- 
- The TEMPLATE mode allows very fast customized "cloning" of ZIP-based OPC container by using "RAW access" to the ZIP streams. 
- The TRANSITION mode is a special version of the TEMPLATE mode, which allows transition-based READ/WRITE access to the 
+
+ The TEMPLATE mode allows very fast customized "cloning" of ZIP-based OPC container by using "RAW access" to the ZIP streams.
+ The TRANSITION mode is a special version of the TEMPLATE mode, which allows transition-based READ/WRITE access to the
  ZIP-based OPC container using a temporary file.
- 
+
  */
 #include <opc/config.h>
 #include <opc/file.h>
@@ -52,13 +52,13 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif    
+#endif
     /**
      Handle to an OPC container created by \ref opcContainerOpen.
      \see opcContainerOpen.
      */
     typedef struct OPC_CONTAINER_STRUCT opcContainer;
-    
+
     /**
      Modes for opcContainerOpen();
      \see opcContainerOpen
@@ -68,7 +68,7 @@ extern "C" {
          Opens the OPC container denoted by \a fileName in READ-ONLY mode. The \a destName parameter must be \a NULL.
          \hideinitializer
          */
-        OPC_OPEN_READ_ONLY=0, 
+        OPC_OPEN_READ_ONLY=0,
         /**
          Opens the OPC container denoted by \a fileName in WRITE-ONLY mode. The \a destName parameter must be \a NULL.
          \hideinitializer
@@ -80,22 +80,22 @@ extern "C" {
          */
         OPC_OPEN_READ_WRITE=2,
         /**
-         This mode will open the container denoted by \a fileName in READ-ONLY mode and the container denoted by 
-         \a destName in write-only mode. Any modifications will be written to the container denoted by \a destName 
+         This mode will open the container denoted by \a fileName in READ-ONLY mode and the container denoted by
+         \a destName in write-only mode. Any modifications will be written to the container denoted by \a destName
          and the unmodified streams from \a fileName will be written to \a destName on closing.
          \warning Currently not implemented.
          \hideinitializer
          */
         OPC_OPEN_TEMPLATE=3,
         /**
-         Like the OPC_OPEN_TEMPLATE mode, but the \a destName will be renamed to the \a fileName on closing. If \a destName 
+         Like the OPC_OPEN_TEMPLATE mode, but the \a destName will be renamed to the \a fileName on closing. If \a destName
          is \a NULL, then the name of the temporary file will be generated automatically.
          \warning Currently not implemented.
          \hideinitializer
          */
         OPC_OPEN_TRANSITION=4
-    } opcContainerOpenMode; 
-    
+    } opcContainerOpenMode;
+
     /** Modes for opcContainerClose.
      \see opcContainerClose.
      */
@@ -106,60 +106,60 @@ extern "C" {
          */
         OPC_CLOSE_NOW = 0,
         /**
-         Close the OPC container and trim the file by removing unused fragments like e.g. 
+         Close the OPC container and trim the file by removing unused fragments like e.g.
          deleted parts.
          \hideinitializer
          */
         OPC_CLOSE_TRIM = 1,
         /**
-         Close the OPC container like in \a OPC_CLOSE_TRIM mode, but additionally remove any 
+         Close the OPC container like in \a OPC_CLOSE_TRIM mode, but additionally remove any
          "interleaved" parts by reordering them.
-         \warning Currently not implemented. Same semantic as OPC_CLOSE_TRIM.       
+         \warning Currently not implemented. Same semantic as OPC_CLOSE_TRIM.
          \hideinitializer
          */
         OPC_CLOSE_DEFRAG = 2
     } opcContainerCloseMode;
-    
+
     /**
      Opens a ZIP-based OPC container.
      @param[in] fileName. For more details see \ref opcContainerOpenMode.
      @param[in] mode. For more details see \ref opcContainerOpenMode.
      @param[in] userContext. Will not be modified by libopc. Can be used to e.g. store the "this" pointer for C++ bindings.
      @param[in] destName. For more details see \ref opcContainerOpenMode.
-     @return \a NULL if failed. 
+     @return \a NULL if failed.
      \see opcContainerOpenMode
      \see opcContainerDump
      */
-    opcContainer* opcContainerOpen(const xmlChar *fileName, 
-                                   opcContainerOpenMode mode, 
-                                   void *userContext, 
+    opcContainer* opcContainerOpen(const xmlChar *fileName,
+                                   opcContainerOpenMode mode,
+                                   void *userContext,
                                    const xmlChar *destName);
 
     /**
      Opens a ZIP-based OPC container from memory.
-     @param[in] data. 
+     @param[in] data.
      @param[in] data_len.
      @param[in] userContext. Will not be modified by libopc. Can be used to e.g. store the "this" pointer for C++ bindings.
      @param[in] mode. For more details see \ref opcContainerOpenMode.
-     @return \a NULL if failed. 
+     @return \a NULL if failed.
      */
     opcContainer* opcContainerOpenMem(const opc_uint8_t *data, opc_uint32_t data_len,
-                                      opcContainerOpenMode mode, 
+                                      opcContainerOpenMode mode,
                                       void *userContext);
 
     /**
      Opens a ZIP-based OPC container from memory.
-     @param[in] ioread. 
-     @param[in] iowrite. 
-     @param[in] ioclose. 
-     @param[in] ioseek. 
-     @param[in] iotrim. 
-     @param[in] ioflush. 
-     @param[in] iocontext. 
-     @param[in] file_size. 
+     @param[in] ioread.
+     @param[in] iowrite.
+     @param[in] ioclose.
+     @param[in] ioseek.
+     @param[in] iotrim.
+     @param[in] ioflush.
+     @param[in] iocontext.
+     @param[in] file_size.
      @param[in] userContext. Will not be modified by libopc. Can be used to e.g. store the "this" pointer for C++ bindings.
      @param[in] mode. For more details see \ref opcContainerOpenMode.
-     @return \a NULL if failed. 
+     @return \a NULL if failed.
      */
     opcContainer* opcContainerOpenIO(opcFileReadCallback *ioread,
                                      opcFileWriteCallback *iowrite,
@@ -169,9 +169,9 @@ extern "C" {
                                      opcFileFlushCallback *ioflush,
                                      void *iocontext,
                                      pofs_t file_size,
-                                     opcContainerOpenMode mode, 
+                                     opcContainerOpenMode mode,
                                      void *userContext);
-    
+
     /**
      Close an OPC container.
      @param[in] c. \ref opcContainer openered by \ref opcContainerOpen.
@@ -181,20 +181,20 @@ extern "C" {
      \see opcContainerCloseMode
      */
     opc_error_t opcContainerClose(opcContainer *c, opcContainerCloseMode mode);
-    
+
     /**
      Returns the unmodified user context passed to \ref opcContainerOpen.
      \see opcContainerOpen
      */
     void *opcContainerGetUserContext(opcContainer *c);
-    
+
     /**
      List all types, relations and parts of the container \a c to \a out.
      \par Sample:
      \include opc_dump.c
      */
     opc_error_t opcContainerDump(opcContainer *c, FILE *out);
-    
+
     /**
      Exports the OPC container to "Flat OPC" (http://blogs.msdn.com/b/ericwhite/archive/2008/09/29/the-flat-opc-format.aspx).
      The flat versions of an OPC file are very important when dealing with e.g XSL(T)-based or Javascript-based transformations.
@@ -202,14 +202,14 @@ extern "C" {
      \todo Implementation needed.
      */
     int opcContainerFlatExport(opcContainer *c, const xmlChar *fileName);
-    
+
     /**
-     Imports the flat version of an OPC container. 
+     Imports the flat version of an OPC container.
      \see opcContainerFlatExport.
      \todo Implementation needed.
      */
     int opcContainerFlatImport(opcContainer *c, const xmlChar *fileName);
-    
+
     /**
      Iterate all types.
      \code
@@ -221,7 +221,7 @@ extern "C" {
      \endcode
     */
     const xmlChar *opcContentTypeFirst(opcContainer *container);
-    
+
     /**
      \see opcContentTypeNext()
     */
@@ -238,12 +238,12 @@ extern "C" {
      \endcode
     */
     const xmlChar *opcExtensionFirst(opcContainer *container);
-    
+
     /**
      \see opcExtensionFirst()
      */
     const xmlChar *opcExtensionNext(opcContainer *container, const xmlChar *ext);
-    
+
     /**
      Get registered type for extension.
      \see opcExtensionRegister()
@@ -295,6 +295,6 @@ extern "C" {
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif    
-        
+#endif
+
 #endif /* OPC_CONTAINER_H */

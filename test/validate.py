@@ -12,7 +12,7 @@ global target_mode
 # XSD validator from http://www.ltg.ed.ac.uk/~ht/xsv-status.html.
 xsv_path="c:\\Program Files\\XSV\\xsv.exe"
 if not(os.path.exists(xsv_path)):
-	print("Can not find \""+xsv_path+"\"");
+	print("Can not find \""+xsv_path+"\"")
 	print("Please download the XSV validator from ")
 	print("http://www.ltg.ed.ac.uk/~ht/xsv-status.html")
 	print("and install it in "+os.path.split(xsv_path)[0])
@@ -53,7 +53,7 @@ def validate(path):
 				validation_hint=None
 				validation_hint=validation_matrix[part["type"]]
 				if not(validation_hint is None):
-					print "validating "+part["name"]+" of type "+part["type"]
+					print("validating "+part["name"]+" of type "+part["type"])
 					validation_error=True
 					validation_msg="Internal error invoking validator"
 					_args = [ mce_extract_path ]
@@ -90,15 +90,15 @@ def validate(path):
 								if validation_error:
 									validation_msg=result.toxml()
 					if validation_error:
-						print "**ERROR validating "+part["name"]
-						print validation_msg
+						print("**ERROR validating "+part["name"])
+						print(validation_msg)
 				else:
-					print "ignoring "+part["name"]+" of type "+part["type"]
+					print("ignoring "+part["name"]+" of type "+part["type"])
 			else:
-				print "skipping "+part["name"]+" of type "+part["type"]
+				print("skipping "+part["name"]+" of type "+part["type"])
 			sys.stdout.flush()
 	else:
-		print "can not find mce_extract tool!"
+		print("can not find mce_extract tool!")
 
 def usage():
 	print("usage:")
@@ -113,7 +113,7 @@ if __name__ == "__main__":
 		opts, args = getopt.getopt(sys.argv[1:], "h", ["help", "target=", "generate=", "skip", "type="])
 	except getopt.GetoptError, err:
 		# print help information and exit:
-		print str(err) # will print something like "option -a not recognized"
+		print(str(err)) # will print something like "option -a not recognized"
 		usage()
 		sys.exit(2)
 	for o, a in opts:
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 		elif o in ("--type"):
 			target_mode=os.path.join(target_mode, a)
 	if None==target_mode:
-		print "please specify target mode, e.g. --target=debug"
+		print("please specify target mode, e.g. --target=debug")
 		sys.exit(2)
 	for f in args:
 		validate(f)
