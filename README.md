@@ -2,6 +2,7 @@
 # libopc
 
 [![CMake](https://github.com/wissem01chiha/libopc/actions/workflows/cmake.yml/badge.svg)](https://github.com/wissem01chiha/libopc/actions/workflows/cmake.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/wissem01chiha/libopc/master.svg)](https://results.pre-commit.ci/latest/github/wissem01chiha/libopc/master)
 [![CodeFactor](https://www.codefactor.io/repository/github/wissem01chiha/libopc/badge)](https://www.codefactor.io/repository/github/wissem01chiha/libopc)
 
 
