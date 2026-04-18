@@ -1,12 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2010/2011, Florian Reuter
+# SPDX-FileCopyrightText: Copyright (c) 2026, Wissem Chiha
+# SPDX-License-Identifier: BSD-3-Clause
+
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES = libplib.la libmce.la libopc.la
 
-libplib_la_SOURCES = plib/plib.c 
+libplib_la_SOURCES = plib/plib.c
 
-libmce_la_SOURCES = mce/helper.c \ 
-	mce/textreader.c \ 
+libmce_la_SOURCES = mce/helper.c \
+	mce/textreader.c \
 	mce/textwriter.c
 
 libopc_la_SOURCES = opc/opc.c \
@@ -42,4 +46,3 @@ EXTRA_DIST = README.md LICENSE.txt
 AM_CFLAGS = -Wall -O2
 AM_CPPFLAGS = $(LIBXML2_CFLAGS)
 AM_LDADD = $(LIBXML2_LIBS)
-

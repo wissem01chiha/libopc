@@ -86,9 +86,10 @@ endif()
 # ============================================================================
 include(cmake/external/zlib.cmake)
 include(cmake/external/libxml2.cmake)
+add_subdirectory(third_party/slog)
 
 # ============================================================================
-# Testing 
+# Testing
 # ============================================================================
 if(LIBOPC_BUILD_TESTING)
     include(CTest)
@@ -101,6 +102,7 @@ endif()
 # Libraries
 # ============================================================================
 list(APPEND opc_libraries LibXml2::LibXml2)
+list(APPEND opc_libraries slog)
 if(ZLIB_FOUND)
     list(APPEND opc_libraries ZLIB::ZLIB)
 else()
@@ -119,12 +121,15 @@ list(APPEND opc_includes
     ${LIBXML2_INCLUDE_DIR}
     ${UNITY_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIRS}
+    third_party/slog/src
 )
 list(APPEND mce_includes
     ${LIBXML2_INCLUDE_DIR}
+    third_party/slog/src
 )
+
 # ============================================================================
-# 
+# Source Files
 # ============================================================================
 set(opc_sources
     opc/container.c
@@ -207,7 +212,7 @@ set(fuzz_sources
 )
 
 # ============================================================================
-# 
+# Targets
 # ============================================================================
 if(BUILD_SHARED_LIBS)
     add_library(opc SHARED ${opc_sources})
@@ -225,7 +230,7 @@ endif()
 
 add_library(opc_a STATIC ${opc_sources})
 set_target_properties(opc_a PROPERTIES OUTPUT_NAME "opc")
-target_include_directories(opc_a 
+target_include_directories(opc_a
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -238,7 +243,7 @@ target_compile_options(opc_a PRIVATE ${opc_cflags})
 
 add_library(plib_a STATIC ${plib_sources})
 set_target_properties(plib_a PROPERTIES OUTPUT_NAME "plib")
-target_include_directories(plib_a 
+target_include_directories(plib_a
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -248,7 +253,7 @@ target_include_directories(plib_a
 
 add_library(mce_a STATIC ${mce_sources})
 set_target_properties(mce_a PROPERTIES OUTPUT_NAME "mce")
-target_include_directories(mce_a 
+target_include_directories(mce_a
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -297,7 +302,7 @@ if(LIBOPC_INSTALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
     install(
-        TARGETS mce 
+        TARGETS mce
         COMPONENT Runtime
         EXPORT mceSharedExport
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -305,7 +310,7 @@ if(LIBOPC_INSTALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
     install(
-        TARGETS plib 
+        TARGETS plib
         COMPONENT Runtime
         EXPORT plibSharedExport
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -314,7 +319,7 @@ if(LIBOPC_INSTALL)
     )
     else()
     install(
-        TARGETS opc_a  
+        TARGETS opc_a
         COMPONENT Development
         EXPORT opcStaticExport
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -322,7 +327,7 @@ if(LIBOPC_INSTALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
     install(
-        TARGETS mce_a  
+        TARGETS mce_a
         COMPONENT Development
         EXPORT mceStaticExport
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -330,7 +335,7 @@ if(LIBOPC_INSTALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
     install(
-        TARGETS plib_a 
+        TARGETS plib_a
         COMPONENT Development
         EXPORT plibStaticExport
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
@@ -382,6 +387,7 @@ if(LIBOPC_INSTALL)
         DESTINATION "${CMAKE_INSTALL_DOCDIR}/libopc"
     )
 endif()
+
 # ============================================================================
 # Package
 # ============================================================================

@@ -47,7 +47,7 @@
 #include <windows.h>
 #endif
 
-#ifndef PTHREAD_MUTEX_RECURSIVE 
+#ifndef PTHREAD_MUTEX_RECURSIVE
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
 
@@ -362,8 +362,8 @@ static void slog_create_tag(char *pOut, size_t nSize, slog_flag_t eFlag, const c
         return;
     }
 
-    if (pCfg->eColorFormat != SLOG_COLORING_TAG) snprintf(pOut, nSize, "<%s>%s", pTag, pIndent);
-    else snprintf(pOut, nSize, "%s<%s>%s%s", pColor, pTag, SLOG_COLOR_RESET, pIndent);
+    if (pCfg->eColorFormat != SLOG_COLORING_TAG) snprintf(pOut, nSize, "[%s]%s", pTag, pIndent);
+    else snprintf(pOut, nSize, "%s[%s]%s%s", pColor, pTag, SLOG_COLOR_RESET, pIndent);
 }
 
 static void slog_create_tid(char *pOut, int nSize, uint8_t nTraceTid)
@@ -477,7 +477,7 @@ static void slog_display_heap(const slog_context_t *pCtx, va_list args)
 
     if (pMessage == NULL)
     {
-        printf("<%s:%d> %s<error>%s %s: Can not allocate memory for input: errno(%d)\n", 
+        printf("<%s:%d> %s<error>%s %s: Can not allocate memory for input: errno(%d)\n",
             __FILE__, __LINE__, SLOG_COLOR_RED, SLOG_COLOR_RESET, __func__, errno);
 
         return;
