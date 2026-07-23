@@ -29,15 +29,15 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include <opc/opc.h>
 #include <libxml/xmlreader.h>
+#include <opc/opc.h>
 
 opc_error_t opcInitLibrary() {
-    xmlInitParser();
-    return OPC_ERROR_NONE;
+  xmlInitParser();
+  return OPC_ERROR_NONE;
 }
 
 opc_error_t opcFreeLibrary() {
-    xmlCleanupParser();
-    return OPC_ERROR_NONE;
+  xmlCleanupParser();
+  return OPC_ERROR_NONE;
 }

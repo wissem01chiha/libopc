@@ -46,48 +46,51 @@
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    opcInitLibrary();
-    opcContainer *c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
-    if (NULL!=c) {
-        opcPart part=opcPartFind(c, _X(argv[2]), NULL, 0);
-        if (OPC_PART_INVALID!=part) {
-            const xmlChar *type=opcPartGetType(c, part);
-            opc_uint32_t type_len=xmlStrlen(type);
-            opc_bool_t is_xml=NULL!=type && type_len>=3 && 'x'==type[type_len-3] && 'm'==type[type_len-2] && 'l'==type[type_len-1];
-            fprintf(stderr, "type=%s is_xml=%i\n", type, is_xml);
-            if (is_xml) {
-                mceTextReader_t reader;
-                if (OPC_ERROR_NONE==opcXmlReaderOpen(c, &reader, part, NULL, 0, 0)) {
-                    xmlTextWriter *writer=xmlNewTextWriterFile(NULL);
-                    xmlTextWriterSetIndent(writer, 1);
-                    if (NULL!=writer) {
-                        mceTextReaderDump(&reader, writer, 1);
-                    }
-                    xmlFreeTextWriter(writer);
-                    mceTextReaderCleanup(&reader);
-                }
-            } else  {
-                opcContainerInputStream *stream=opcContainerOpenInputStream(c, part);
-                if (NULL!=stream) {
-                    opc_uint32_t ret=0;
-                    opc_uint8_t buf[100];
-                    while((ret=opcContainerReadInputStream(stream, buf, sizeof(buf)))>0) {
-                        fwrite(buf, sizeof(opc_uint8_t), ret, stdout);
-                    }
-                    opcContainerCloseInputStream(stream);
-                }
-            }
+  opcInitLibrary();
+  opcContainer *c =
+      opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
+  if (NULL != c) {
+    opcPart part = opcPartFind(c, _X(argv[2]), NULL, 0);
+    if (OPC_PART_INVALID != part) {
+      const xmlChar *type = opcPartGetType(c, part);
+      opc_uint32_t type_len = xmlStrlen(type);
+      opc_bool_t is_xml =
+          NULL != type && type_len >= 3 && 'x' == type[type_len - 3] &&
+          'm' == type[type_len - 2] && 'l' == type[type_len - 1];
+      fprintf(stderr, "type=%s is_xml=%i\n", type, is_xml);
+      if (is_xml) {
+        mceTextReader_t reader;
+        if (OPC_ERROR_NONE == opcXmlReaderOpen(c, &reader, part, NULL, 0, 0)) {
+          xmlTextWriter *writer = xmlNewTextWriterFile(NULL);
+          xmlTextWriterSetIndent(writer, 1);
+          if (NULL != writer) {
+            mceTextReaderDump(&reader, writer, 1);
+          }
+          xmlFreeTextWriter(writer);
+          mceTextReaderCleanup(&reader);
         }
-        opcContainerClose(c, OPC_CLOSE_NOW);
+      } else {
+        opcContainerInputStream *stream = opcContainerOpenInputStream(c, part);
+        if (NULL != stream) {
+          opc_uint32_t ret = 0;
+          opc_uint8_t buf[100];
+          while ((ret = opcContainerReadInputStream(stream, buf, sizeof(buf))) >
+                 0) {
+            fwrite(buf, sizeof(opc_uint8_t), ret, stdout);
+          }
+          opcContainerCloseInputStream(stream);
+        }
+      }
     }
-    opcFreeLibrary();
+    opcContainerClose(c, OPC_CLOSE_NOW);
+  }
+  opcFreeLibrary();
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return 0;
+  return 0;
 }

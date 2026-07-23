@@ -52,57 +52,58 @@
 #endif
 
 static void traverse(opcContainer *c, opcPart source) {
-    for(opcRelation rel=opcRelationFirst(c, source);OPC_RELATION_INVALID!=rel;rel=opcRelationNext(c, source, rel)) {
-        opcPart target=opcRelationGetInternalTarget(c, source, rel);
-        if (OPC_PART_INVALID!=target) {
-            const xmlChar *prefix=NULL;
-            opc_uint32_t counter=-1;
-            const xmlChar *type=NULL;
-            opcRelationGetInformation(c, source, rel, &prefix, &counter, &type);
-            char buf[20]="";
-            if (-1!=counter) {
-                sprintf(buf, "%i", counter);
-            }
-            printf("%s %s%s %s %s\n", source, prefix, buf, target, type);
-            traverse(c, target);
-        }
+  for (opcRelation rel = opcRelationFirst(c, source);
+       OPC_RELATION_INVALID != rel; rel = opcRelationNext(c, source, rel)) {
+    opcPart target = opcRelationGetInternalTarget(c, source, rel);
+    if (OPC_PART_INVALID != target) {
+      const xmlChar *prefix = NULL;
+      opc_uint32_t counter = -1;
+      const xmlChar *type = NULL;
+      opcRelationGetInformation(c, source, rel, &prefix, &counter, &type);
+      char buf[20] = "";
+      if (-1 != counter) {
+        sprintf(buf, "%i", counter);
+      }
+      printf("%s %s%s %s %s\n", source, prefix, buf, target, type);
+      traverse(c, target);
     }
+  }
 }
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    opcInitLibrary();
-    opcContainer *c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
-    if (NULL!=c) {
-        if (3==argc) {
-            opcRelation rel=opcRelationFind(c, OPC_PART_INVALID, _X(argv[2]), NULL);
-            if (OPC_RELATION_INVALID!=rel) {
-                const xmlChar *type=NULL;
-                opcRelationGetInformation(c, OPC_PART_INVALID, rel, NULL, NULL, &type);
-                printf("type=%s\n", type);
-            }
-        } else if (4==argc) {
-            opcPart part=opcPartFind(c, _X(argv[2]), NULL, 0);
-            if (OPC_PART_INVALID!=part) {
-                opcRelation rel=opcRelationFind(c, part, _X(argv[3]), NULL);
-                if (OPC_RELATION_INVALID!=rel) {
-                    const xmlChar *type=NULL;
-                    opcRelationGetInformation(c, part, rel, NULL, NULL, &type);
-                    printf("type=%s\n", type);
-                }
-            }
-        } else {
-            traverse(c, OPC_PART_INVALID);
+  opcInitLibrary();
+  opcContainer *c =
+      opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
+  if (NULL != c) {
+    if (3 == argc) {
+      opcRelation rel = opcRelationFind(c, OPC_PART_INVALID, _X(argv[2]), NULL);
+      if (OPC_RELATION_INVALID != rel) {
+        const xmlChar *type = NULL;
+        opcRelationGetInformation(c, OPC_PART_INVALID, rel, NULL, NULL, &type);
+        printf("type=%s\n", type);
+      }
+    } else if (4 == argc) {
+      opcPart part = opcPartFind(c, _X(argv[2]), NULL, 0);
+      if (OPC_PART_INVALID != part) {
+        opcRelation rel = opcRelationFind(c, part, _X(argv[3]), NULL);
+        if (OPC_RELATION_INVALID != rel) {
+          const xmlChar *type = NULL;
+          opcRelationGetInformation(c, part, rel, NULL, NULL, &type);
+          printf("type=%s\n", type);
         }
-        opcContainerClose(c, OPC_CLOSE_NOW);
+      }
+    } else {
+      traverse(c, OPC_PART_INVALID);
     }
-    opcFreeLibrary();
+    opcContainerClose(c, OPC_CLOSE_NOW);
+  }
+  opcFreeLibrary();
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return 0;
+  return 0;
 }

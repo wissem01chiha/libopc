@@ -33,8 +33,8 @@
 /** @file mce/textwriter.h
 
 */
-#include <mce/config.h>
 #include <libxml/xmlwriter.h>
+#include <mce/config.h>
 #include <mce/helper.h>
 
 #ifndef MCE_TEXTWRITER_H
@@ -59,115 +59,125 @@ extern "C" {
   */
 #define MCE_MUSTUNDERSTAND 0x2
 
-    /**
-      The MCE text writer context.
-      */
-    typedef struct MCE_TEXTWRITER_STRUCT mceTextWriter;
+/**
+  The MCE text writer context.
+  */
+typedef struct MCE_TEXTWRITER_STRUCT mceTextWriter;
 
-    /**
-      Create a new MCE text writer.
-      \see http://xmlsoft.org/html/libxml-xmlIO.html#xmlOutputBufferCreateIO
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlNewTextWriter
-      */
-    mceTextWriter *mceTextWriterCreateIO(xmlOutputWriteCallback iowrite, xmlOutputCloseCallback  ioclose, void *ioctx, xmlCharEncodingHandlerPtr encoder);
+/**
+  Create a new MCE text writer.
+  \see http://xmlsoft.org/html/libxml-xmlIO.html#xmlOutputBufferCreateIO
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlNewTextWriter
+  */
+mceTextWriter *mceTextWriterCreateIO(xmlOutputWriteCallback iowrite,
+                                     xmlOutputCloseCallback ioclose,
+                                     void *ioctx,
+                                     xmlCharEncodingHandlerPtr encoder);
 
-    /**
-      Helper which create a new MCE text writer for a FILE handle.
-      */
-    mceTextWriter *mceNewTextWriterFile(FILE *file);
+/**
+  Helper which create a new MCE text writer for a FILE handle.
+  */
+mceTextWriter *mceNewTextWriterFile(FILE *file);
 
-    /**
-      Free all resources for \w.
-      */
-    int mceTextWriterFree(mceTextWriter *w);
+/**
+  Free all resources for \w.
+  */
+int mceTextWriterFree(mceTextWriter *w);
 
-    /**
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartDocument
-      */
-    int mceTextWriterStartDocument(mceTextWriter *w);
+/**
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartDocument
+  */
+int mceTextWriterStartDocument(mceTextWriter *w);
 
-    /**
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterEndDocument
-      */
-    int mceTextWriterEndDocument(mceTextWriter *w);
+/**
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterEndDocument
+  */
+int mceTextWriterEndDocument(mceTextWriter *w);
 
-    /**
-      Start a new XML element. If ns==NULL then there is no namespace and ""==ns means the default namespace.
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartElement
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartElementNS
-      */
-    int mceTextWriterStartElement(mceTextWriter *w, const xmlChar *ns, const xmlChar *ln);
+/**
+  Start a new XML element. If ns==NULL then there is no namespace and ""==ns
+  means the default namespace.
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartElement
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterStartElementNS
+  */
+int mceTextWriterStartElement(mceTextWriter *w, const xmlChar *ns,
+                              const xmlChar *ln);
 
-    /**
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterEndElement
-      */
-    int mceTextWriterEndElement(mceTextWriter *w, const xmlChar *ns, const xmlChar *ln);
+/**
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterEndElement
+  */
+int mceTextWriterEndElement(mceTextWriter *w, const xmlChar *ns,
+                            const xmlChar *ln);
 
-    /**
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterWriteString
-      */
-    int mceTextWriterWriteString(mceTextWriter *w, const xmlChar *content);
+/**
+  \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterWriteString
+  */
+int mceTextWriterWriteString(mceTextWriter *w, const xmlChar *content);
 
-    /**
-      Register a namespace. Must be called before mceTextWriterStartElement.
-      \see MCE_DEFAULT
-      \see MCE_IGNORABLE
-      \see MCE_MUSTUNDERSTAND
-      */
-    const xmlChar *mceTextWriterRegisterNamespace(mceTextWriter *w, const xmlChar *ns, const xmlChar *prefix, int flags);
+/**
+  Register a namespace. Must be called before mceTextWriterStartElement.
+  \see MCE_DEFAULT
+  \see MCE_IGNORABLE
+  \see MCE_MUSTUNDERSTAND
+  */
+const xmlChar *mceTextWriterRegisterNamespace(mceTextWriter *w,
+                                              const xmlChar *ns,
+                                              const xmlChar *prefix, int flags);
 
-    /**
-      Register qname (ns, ln) as a "process content" element wrt. MCE. Must be called before mceTextWriterStartElement.
-      */
-    int mceTextWriterProcessContent(mceTextWriter *w, const xmlChar *ns, const xmlChar *ln);
+/**
+  Register qname (ns, ln) as a "process content" element wrt. MCE. Must be
+  called before mceTextWriterStartElement.
+  */
+int mceTextWriterProcessContent(mceTextWriter *w, const xmlChar *ns,
+                                const xmlChar *ln);
 
-    /**
-      Writes a formatted attribute.
-      \see http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterWriteFormatAttribute
-      */
-    int mceTextWriterAttributeF(mceTextWriter *w, const xmlChar *ns, const xmlChar *ln, const char *value, ...);
+/**
+  Writes a formatted attribute.
+  \see
+  http://xmlsoft.org/html/libxml-xmlwriter.html#xmlTextWriterWriteFormatAttribute
+  */
+int mceTextWriterAttributeF(mceTextWriter *w, const xmlChar *ns,
+                            const xmlChar *ln, const char *value, ...);
 
-    /**
-      Starts an MCE alternate content section.
-      */
-    int mceTextWriterStartAlternateContent(mceTextWriter *w);
+/**
+  Starts an MCE alternate content section.
+  */
+int mceTextWriterStartAlternateContent(mceTextWriter *w);
 
-    /**
-      Ends an MCE alternate content section.
-      */
-    int mceTextWriterEndAlternateContent(mceTextWriter *w);
+/**
+  Ends an MCE alternate content section.
+  */
+int mceTextWriterEndAlternateContent(mceTextWriter *w);
 
-    /**
-      Start an MCE choice.
-      */
-    int mceTextWriterStartChoice(mceTextWriter *w, const xmlChar *ns);
+/**
+  Start an MCE choice.
+  */
+int mceTextWriterStartChoice(mceTextWriter *w, const xmlChar *ns);
 
-    /**
-      Ends an MCE choice.
-      */
-    int mceTextWriterEndChoice(mceTextWriter *w);
+/**
+  Ends an MCE choice.
+  */
+int mceTextWriterEndChoice(mceTextWriter *w);
 
-    /**
-      Start an MCE fallback.
-      */
-    int mceTextWriterStartFallback(mceTextWriter *w);
+/**
+  Start an MCE fallback.
+  */
+int mceTextWriterStartFallback(mceTextWriter *w);
 
-    /**
-      Ends an MCE fallback.
-      */
-    int mceTextWriterEndFallback(mceTextWriter *w);
+/**
+  Ends an MCE fallback.
+  */
+int mceTextWriterEndFallback(mceTextWriter *w);
 
+/**
+  Returns the underlying xmlTextWriter.
+  */
+xmlTextWriterPtr mceTextWriterIntern(mceTextWriter *w);
 
-    /**
-      Returns the underlying xmlTextWriter.
-      */
-    xmlTextWriterPtr mceTextWriterIntern(mceTextWriter *w);
-
-    /**
-      Helper which create a new xmlTextWriterPtr for a FILE handle.
-      */
-    xmlTextWriterPtr xmlNewTextWriterFile(FILE *file);
-
+/**
+  Helper which create a new xmlTextWriterPtr for a FILE handle.
+  */
+xmlTextWriterPtr xmlNewTextWriterFile(FILE *file);
 
 #ifdef __cplusplus
 } /* extern "C" */

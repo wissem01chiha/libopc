@@ -47,58 +47,63 @@
 #endif
 
 static void mce_def dumpElement(mceTextReader_t *reader) {
-    xmlChar *ln=xmlTextReaderLocalName(reader->reader);
-    printf("<%s>\n", ln);
-    mce_start_attributes(reader) {
-    } mce_end_attributes(reader);
-    mce_start_children(reader) {
-        mce_start_element(reader, NULL, NULL) {
-            mce_ref(dumpElement(reader));
-        } mce_end_element(reader);
-        mce_start_text(reader) {
-        } mce_end_text(reader);
-    } mce_end_children(reader);
-    printf("</%s>\n", ln);
-    xmlFree(ln);
+  xmlChar *ln = xmlTextReaderLocalName(reader->reader);
+  printf("<%s>\n", ln);
+  mce_start_attributes(reader) {}
+  mce_end_attributes(reader);
+  mce_start_children(reader) {
+    mce_start_element(reader, NULL, NULL) { mce_ref(dumpElement(reader)); }
+    mce_end_element(reader);
+    mce_start_text(reader) {}
+    mce_end_text(reader);
+  }
+  mce_end_children(reader);
+  printf("</%s>\n", ln);
+  xmlFree(ln);
 }
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    time_t start_time=time(NULL);
-    if (OPC_ERROR_NONE==opcInitLibrary() && 3==argc) {
-        opcContainer *c=NULL;
-        if (NULL!=(c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL))) {
-            opcContainerDump(c, stdout);
-            mceTextReader_t reader;
-            if (OPC_ERROR_NONE==opcXmlReaderOpen(c, &reader,  _X(argv[2]), NULL, 0, 0)) {
-                mce_start_document(&reader) {
-                    mce_start_element(&reader, NULL, NULL) {
-                        mce_ref(dumpElement(&reader));
-                    } mce_end_element(&reader);
-                } mce_end_document(&reader);
-                mceTextReaderCleanup(&reader);
-            } else {
-                printf("ERROR: part \"%s\" could not be opened in \"%s\" for XML reading.\n", argv[2], argv[1]);
-            }
-            opcContainerClose(c, OPC_CLOSE_NOW);
-        } else {
-            printf("ERROR: file \"%s\" could not be opened.\n", argv[1]);
+  time_t start_time = time(NULL);
+  if (OPC_ERROR_NONE == opcInitLibrary() && 3 == argc) {
+    opcContainer *c = NULL;
+    if (NULL !=
+        (c = opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL))) {
+      opcContainerDump(c, stdout);
+      mceTextReader_t reader;
+      if (OPC_ERROR_NONE ==
+          opcXmlReaderOpen(c, &reader, _X(argv[2]), NULL, 0, 0)) {
+        mce_start_document(&reader) {
+          mce_start_element(&reader, NULL, NULL) {
+            mce_ref(dumpElement(&reader));
+          }
+          mce_end_element(&reader);
         }
-        opcFreeLibrary();
-    } else if (2==argc) {
-        printf("ERROR: initialization of libopc failed.\n");
+        mce_end_document(&reader);
+        mceTextReaderCleanup(&reader);
+      } else {
+        printf("ERROR: part \"%s\" could not be opened in \"%s\" for XML "
+               "reading.\n",
+               argv[2], argv[1]);
+      }
+      opcContainerClose(c, OPC_CLOSE_NOW);
     } else {
-        printf("opc_extract FILENAME.\n\n");
-        printf("Sample: opc_extract test.docx word/document.xml\n");
+      printf("ERROR: file \"%s\" could not be opened.\n", argv[1]);
     }
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+    opcFreeLibrary();
+  } else if (2 == argc) {
+    printf("ERROR: initialization of libopc failed.\n");
+  } else {
+    printf("opc_extract FILENAME.\n\n");
+    printf("Sample: opc_extract test.docx word/document.xml\n");
+  }
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return 0;
+  return 0;
 }

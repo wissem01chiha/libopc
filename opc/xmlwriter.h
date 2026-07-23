@@ -33,8 +33,8 @@
 /** @file opc/xmlwriter.h
 
  */
-#include <opc/config.h>
 #include <mce/textwriter.h>
+#include <opc/config.h>
 
 #ifndef OPC_XMLWRITER_H
 #define OPC_XMLWRITER_H
@@ -43,12 +43,14 @@
 extern "C" {
 #endif
 
-    /**
-      Create an MCE text writer for \c part in \c container with compression \c compression_option.
-      \note Make sure the part exists.
-      \see opcPartFind
-      */
-    mceTextWriter *mceTextWriterOpen(opcContainer *c, opcPart part, opcCompressionOption_t compression_option);
+/**
+  Create an MCE text writer for \c part in \c container with compression \c
+  compression_option.
+  \note Make sure the part exists.
+  \see opcPartFind
+  */
+mceTextWriter *mceTextWriterOpen(opcContainer *c, opcPart part,
+                                 opcCompressionOption_t compression_option);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -30,7 +30,8 @@
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
-    Dump all information about an OPC container via the memory-based OPC container interface.
+    Dump all information about an OPC container via the memory-based OPC
+   container interface.
 
     Ussage:
     opc_mem FILENAME
@@ -45,44 +46,44 @@
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    time_t start_time=time(NULL);
-    opc_error_t err=OPC_ERROR_NONE;
-    if (OPC_ERROR_NONE==opcInitLibrary() && 2==argc) {
-        opcContainer *c=NULL;
-        FILE *f=fopen(argv[1], "rb");
-        fseek(f, 0, SEEK_END);
-        opc_uint32_t data_len=ftell(f);
-        fseek(f, 0, SEEK_SET);
-        opc_uint8_t *data=(opc_uint8_t *)xmlMalloc(data_len);
-        size_t fread_len=fread(data, 1, data_len, f);
-        fclose(f);
-	if (data_len!=fread_len) {
-            printf("ERROR: reading file.\n");
-	} else if (NULL!=(c=opcContainerOpenMem(data, data_len, OPC_OPEN_READ_ONLY, NULL))) {
-            opcContainerDump(c, stdout);
-            opcContainerClose(c, OPC_CLOSE_NOW);
-        } else {
-            printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
-            err=OPC_ERROR_STREAM;
-        }
-        xmlFree(data);
-        opcFreeLibrary();
-    } else if (2==argc) {
-        printf("ERROR: initialization of libopc failed.\n");
-        err=OPC_ERROR_STREAM;
+  time_t start_time = time(NULL);
+  opc_error_t err = OPC_ERROR_NONE;
+  if (OPC_ERROR_NONE == opcInitLibrary() && 2 == argc) {
+    opcContainer *c = NULL;
+    FILE *f = fopen(argv[1], "rb");
+    fseek(f, 0, SEEK_END);
+    opc_uint32_t data_len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    opc_uint8_t *data = (opc_uint8_t *)xmlMalloc(data_len);
+    size_t fread_len = fread(data, 1, data_len, f);
+    fclose(f);
+    if (data_len != fread_len) {
+      printf("ERROR: reading file.\n");
+    } else if (NULL != (c = opcContainerOpenMem(data, data_len,
+                                                OPC_OPEN_READ_ONLY, NULL))) {
+      opcContainerDump(c, stdout);
+      opcContainerClose(c, OPC_CLOSE_NOW);
     } else {
-        printf("opc_dump FILENAME.\n\n");
-        printf("Sample: opc_dump test.docx\n");
+      printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
+      err = OPC_ERROR_STREAM;
     }
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+    xmlFree(data);
+    opcFreeLibrary();
+  } else if (2 == argc) {
+    printf("ERROR: initialization of libopc failed.\n");
+    err = OPC_ERROR_STREAM;
+  } else {
+    printf("opc_dump FILENAME.\n\n");
+    printf("Sample: opc_dump test.docx\n");
+  }
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return (OPC_ERROR_NONE==err?0:3);
+  return (OPC_ERROR_NONE == err ? 0 : 3);
 }

@@ -34,11 +34,10 @@
 #ifndef MCE_CONFIG_H
 #define MCE_CONFIG_H
 
-#include <libxml/xmlstring.h>
-#include <stdio.h>
-#include <plib/plib.h>
 #include <assert.h>
-
+#include <libxml/xmlstring.h>
+#include <plib/plib.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
