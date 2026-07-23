@@ -1,3 +1,21 @@
+---
+title:  Installation Guide
+nav_order: 5
+---
+
+## Installation
+
+## Downloads
+
+Version `libopc‑1.0.0` is not yet released.
+Use Git to get the latest updates from the master branch:
+
+```bash
+git clone --depth 1 https://github.com/wissem01chiha/libopc
+```
+
+---
+
 libopc build and installation guide :
 
 BUILD ON LINUX/MAC OSX:

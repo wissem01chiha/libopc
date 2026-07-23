@@ -1,4 +1,9 @@
-TO-DOs:
+---
+title: TO-DOs
+nav_order: 4
+---
+
+# TO-DOs
 
   - add support for Make via Makefiles (unix only, for non-cmake users)
   - add support for bazel build system
