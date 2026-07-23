@@ -30,74 +30,84 @@
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <libxml/xmlreader.h>
+#include <libxml/xmlwriter.h>
+#include <mce/textreader.h>
 #include <stdio.h>
 #include <time.h>
-#include <mce/textreader.h>
-#include <libxml/xmlwriter.h>
-#include <libxml/xmlreader.h>
 #ifdef WIN32
 #include <crtdbg.h>
 #endif
 
-
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    int ret=-1;
-    time_t start_time=time(NULL);
-    FILE *file=NULL;
-    int writer_indent=0;
-    pbool_t reader_mce=PTRUE;
-    const char *fileName=NULL;
-    for(int i=1;i<argc;i++) {
-        if ((0==xmlStrcmp(_X("--understands"), _X(argv[i])) || 0==xmlStrcmp(_X("-u"), _X(argv[i]))) && i+1<argc) {
-            i++; // skip namespace, registered later when parser was created.
-        } else if ((0==xmlStrcmp(_X("--out"), _X(argv[i])) || 0==xmlStrcmp(_X("--out"), _X(argv[i]))) && i+1<argc && NULL==file) {
-            const char *filename=argv[++i];
-            file=fopen(filename, "w");
-        } else if (0==xmlStrcmp(_X("--indent"), _X(argv[i]))) {
-            writer_indent=1;
-        } else if (0==xmlStrcmp(_X("--raw"), _X(argv[i]))) {
-            reader_mce=PFALSE;
-        } else if (NULL==fileName) {
-            fileName=argv[i];
-        } else {
-            fprintf(stderr, "IGNORED: %s\n", argv[i]);
-        }
-    }
-    xmlTextWriter *writer=xmlNewTextWriterFile(file);
-    if (NULL==fileName || NULL==writer) {
-        printf("mcepp [--understands NAMESPACE] [--out FILENAME] [--indent] [--raw] [FILENAME | - ]\n\n");
-        printf("Sample: mcepp sample.xml\n");
+  int ret = -1;
+  time_t start_time = time(NULL);
+  FILE *file = NULL;
+  int writer_indent = 0;
+  pbool_t reader_mce = PTRUE;
+  const char *fileName = NULL;
+  for (int i = 1; i < argc; i++) {
+    if ((0 == xmlStrcmp(_X("--understands"), _X(argv[i])) ||
+         0 == xmlStrcmp(_X("-u"), _X(argv[i]))) &&
+        i + 1 < argc) {
+      i++; // skip namespace, registered later when parser was created.
+    } else if ((0 == xmlStrcmp(_X("--out"), _X(argv[i])) ||
+                0 == xmlStrcmp(_X("--out"), _X(argv[i]))) &&
+               i + 1 < argc && NULL == file) {
+      const char *filename = argv[++i];
+      file = fopen(filename, "w");
+    } else if (0 == xmlStrcmp(_X("--indent"), _X(argv[i]))) {
+      writer_indent = 1;
+    } else if (0 == xmlStrcmp(_X("--raw"), _X(argv[i]))) {
+      reader_mce = PFALSE;
+    } else if (NULL == fileName) {
+      fileName = argv[i];
     } else {
-        xmlInitParser();
-        xmlTextWriterSetIndent(writer, writer_indent);
-        mceTextReader_t mceTextReader;
-        mceTextReaderInit(&mceTextReader, ('-'==fileName[0] && 0==fileName[1]?xmlReaderForFd(0, NULL, NULL, 0):xmlReaderForFile(fileName, NULL, 0)));
-        mceTextReaderDisableMCE(&mceTextReader, !reader_mce);
-        for(int i=1;i<argc;i++) {
-            if ((0==xmlStrcmp(_X("--understands"), _X(argv[i])) || 0==xmlStrcmp(_X("-u"), _X(argv[i]))) && i+1<argc) {
-                const xmlChar *ns=_X(argv[++i]);
-                mceTextReaderUnderstandsNamespace(&mceTextReader, ns);
-            }
-        }
-
-        if (-1==mceTextReaderDump(&mceTextReader, writer, PFALSE)) {
-            ret=mceTextReaderGetError(&mceTextReader);
-        } else {
-            ret=0;
-        }
-        mceTextReaderCleanup(&mceTextReader);
-        xmlCleanupParser();
+      fprintf(stderr, "IGNORED: %s\n", argv[i]);
     }
-    if (NULL!=writer) xmlFreeTextWriter(writer);
-    if (NULL!=file) fclose(file);
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+  }
+  xmlTextWriter *writer = xmlNewTextWriterFile(file);
+  if (NULL == fileName || NULL == writer) {
+    printf("mcepp [--understands NAMESPACE] [--out FILENAME] [--indent] "
+           "[--raw] [FILENAME | - ]\n\n");
+    printf("Sample: mcepp sample.xml\n");
+  } else {
+    xmlInitParser();
+    xmlTextWriterSetIndent(writer, writer_indent);
+    mceTextReader_t mceTextReader;
+    mceTextReaderInit(&mceTextReader,
+                      ('-' == fileName[0] && 0 == fileName[1]
+                           ? xmlReaderForFd(0, NULL, NULL, 0)
+                           : xmlReaderForFile(fileName, NULL, 0)));
+    mceTextReaderDisableMCE(&mceTextReader, !reader_mce);
+    for (int i = 1; i < argc; i++) {
+      if ((0 == xmlStrcmp(_X("--understands"), _X(argv[i])) ||
+           0 == xmlStrcmp(_X("-u"), _X(argv[i]))) &&
+          i + 1 < argc) {
+        const xmlChar *ns = _X(argv[++i]);
+        mceTextReaderUnderstandsNamespace(&mceTextReader, ns);
+      }
+    }
+
+    if (-1 == mceTextReaderDump(&mceTextReader, writer, PFALSE)) {
+      ret = mceTextReaderGetError(&mceTextReader);
+    } else {
+      ret = 0;
+    }
+    mceTextReaderCleanup(&mceTextReader);
+    xmlCleanupParser();
+  }
+  if (NULL != writer)
+    xmlFreeTextWriter(writer);
+  if (NULL != file)
+    fclose(file);
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return ret;
+  return ret;
 }

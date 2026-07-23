@@ -35,14 +35,14 @@
 */
 #include <opc/config.h>
 #include <opc/container.h>
-#include <opc/part.h>
-#include <opc/relation.h>
 #include <opc/inputstream.h>
 #include <opc/outputstream.h>
-#include <opc/zip.h>
+#include <opc/part.h>
+#include <opc/properties.h>
+#include <opc/relation.h>
 #include <opc/xmlreader.h>
 #include <opc/xmlwriter.h>
-#include <opc/properties.h>
+#include <opc/zip.h>
 
 #ifndef OPC_OPC_H
 #define OPC_OPC_H
@@ -51,20 +51,20 @@
 extern "C" {
 #endif
 
-    /**
-     * Initialize libopc.
-     * Sample:
-     * \include opc_helloworld.c
-     * @return Non-zero if successful.
-     */
-    opc_error_t opcInitLibrary();
+/**
+ * Initialize libopc.
+ * Sample:
+ * \include opc_helloworld.c
+ * @return Non-zero if successful.
+ */
+opc_error_t opcInitLibrary();
 
-    /**
-     * Free libopc. Clean up all resources.
-     * @return Non-zero if successful.
-     * \see opcInitLibrary.
-     */
-    opc_error_t opcFreeLibrary();
+/**
+ * Free libopc. Clean up all resources.
+ * @return Non-zero if successful.
+ * \see opcInitLibrary.
+ */
+opc_error_t opcFreeLibrary();
 
 #ifdef __cplusplus
 } /* extern "C" */

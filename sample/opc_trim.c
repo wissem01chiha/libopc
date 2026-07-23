@@ -30,8 +30,8 @@
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
-    Trim an OPC container, i.e. remove all unneeded bytes and make the container as small as possible.
-    [Content Types].xml and all _rels will be rewritten.
+    Trim an OPC container, i.e. remove all unneeded bytes and make the container
+   as small as possible. [Content Types].xml and all _rels will be rewritten.
 
     Ussage:
     opc_trim FILENAME
@@ -46,35 +46,35 @@
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    time_t start_time=time(NULL);
-    opc_error_t err=OPC_ERROR_NONE;
-    if (OPC_ERROR_NONE==opcInitLibrary() && 2==argc) {
-        opcContainer *c=NULL;
-        if (NULL!=(c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_WRITE, NULL, NULL))) {
-            opcContainerDump(c, stdout);
-            opcContainerClose(c, OPC_CLOSE_TRIM);
-        } else {
-            printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
-            err=OPC_ERROR_STREAM;
-        }
-        opcFreeLibrary();
-    } else if (2==argc) {
-        printf("ERROR: initialization of libopc failed.\n");
-        err=OPC_ERROR_STREAM;
+  time_t start_time = time(NULL);
+  opc_error_t err = OPC_ERROR_NONE;
+  if (OPC_ERROR_NONE == opcInitLibrary() && 2 == argc) {
+    opcContainer *c = NULL;
+    if (NULL !=
+        (c = opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_WRITE, NULL, NULL))) {
+      opcContainerDump(c, stdout);
+      opcContainerClose(c, OPC_CLOSE_TRIM);
     } else {
-        printf("opc_dump FILENAME.\n\n");
-        printf("Sample: opc_dump test.docx\n");
+      printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
+      err = OPC_ERROR_STREAM;
     }
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+    opcFreeLibrary();
+  } else if (2 == argc) {
+    printf("ERROR: initialization of libopc failed.\n");
+    err = OPC_ERROR_STREAM;
+  } else {
+    printf("opc_dump FILENAME.\n\n");
+    printf("Sample: opc_dump test.docx\n");
+  }
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return (OPC_ERROR_NONE==err?0:3);
+  return (OPC_ERROR_NONE == err ? 0 : 3);
 }

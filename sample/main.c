@@ -48,7 +48,8 @@
  */
 
 /** \example opc_dump.c
- Demonstrates the the use of \ref opcContainerOpen, \ref opcContainerClose and \redf opcContainerDump.
+ Demonstrates the the use of \ref opcContainerOpen, \ref opcContainerClose and
+ \redf opcContainerDump.
  */
 
 /** \example opc_extract.c
@@ -56,16 +57,18 @@
  */
 
 /** \example opc_zipwrite.c
- Demonstrates low level ZIP write functionality as needed by the high level opcContainer API.
+ Demonstrates low level ZIP write functionality as needed by the high level
+ opcContainer API.
  */
 
-
 /** \example opc_zipread.c
- Demonstrates low level ZIP read functionality as needed by the high level opcContainer API.
+ Demonstrates low level ZIP read functionality as needed by the high level
+ opcContainer API.
  */
 
 /** \example opc_zipextract.c
- Demonstrates low level ZIP read functionality as needed by the high level opcContainer API.
+ Demonstrates low level ZIP read functionality as needed by the high level
+ opcContainer API.
  */
 
 /** \example opc_xml.c
@@ -86,16 +89,20 @@
 
 /** \example opc_image.c
  Sample program which will extract all images from an OPC container.
- E.g. opc_dump hello.pptx will extract all pictures from "hello.pptx" in the current directory.
- The call opc_dump hello.pptx C:\Users\flr\Pictures will extract all pictures from "hello.pptx" in the directory "C:\Users\flr\Pictures".
+ E.g. opc_dump hello.pptx will extract all pictures from "hello.pptx" in the
+ current directory. The call opc_dump hello.pptx C:\Users\flr\Pictures will
+ extract all pictures from "hello.pptx" in the directory
+ "C:\Users\flr\Pictures".
  */
 
 /** \example opc_mem.c
- Demonstrates the the use of \ref opcContainerOpenMem, i.e. how to use "in-memory" containers.
+ Demonstrates the the use of \ref opcContainerOpenMem, i.e. how to use
+ "in-memory" containers.
  */
 
 /** \example opc_part.c
- Demonstrates how to dump a part from an OPC container. Ussage opc_dump [container] [part-name]. E.g. opc_dump sample.docx "word/document.xml".
+ Demonstrates how to dump a part from an OPC container. Ussage opc_dump
+ [container] [part-name]. E.g. opc_dump sample.docx "word/document.xml".
  */
 
 /** \example opc_relation.c
@@ -103,11 +110,13 @@
  */
 
 /** \example opc_text.c
- Sample program which will extract all text form an Word document and dump it as HTML.
+ Sample program which will extract all text form an Word document and dump it as
+ HTML.
  */
 
 /** \example opc_trim.c
- Opens an OPC containers and saves it back in "trimming" mode, which will reduce the size as much as possible.
+ Opens an OPC containers and saves it back in "trimming" mode, which will reduce
+ the size as much as possible.
  */
 
 /** \example opc_type.c
@@ -115,20 +124,19 @@
  */
 
 /** \example opc_generate.c
- Sample program which will read an OPC container and generate a "C" file which uses the API to generate the passed container.
+ Sample program which will read an OPC container and generate a "C" file which
+ uses the API to generate the passed container.
  */
 
+int main(int argc, const char *argv[]) {
+  slog_init("main.log", SLOG_FLAGS_ALL, 0);
 
-int main( int argc, const char* argv[] )
-{
-    slog_init("main.log", SLOG_FLAGS_ALL, 0);
-
-    if (OPC_ERROR_NONE==opcInitLibrary()) {
-        slog_info("libopc as well as zlib and libxml2 are ready to use");
-        opcFreeLibrary();
-        return 0;
-    }  else  {
-        slog_info("error initializing libopc");
-        return 1;
-    }
+  if (OPC_ERROR_NONE == opcInitLibrary()) {
+    slog_info("libopc as well as zlib and libxml2 are ready to use");
+    opcFreeLibrary();
+    return 0;
+  } else {
+    slog_info("error initializing libopc");
+    return 1;
+  }
 }

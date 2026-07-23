@@ -29,37 +29,54 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <opc/opc.h>
 #include "internal.h"
+#include <opc/opc.h>
 
-opc_error_t opcXmlReaderOpenEx(opcContainer *container, mceTextReader_t *mceTextReader, const xmlChar *partName, opc_bool_t rels_segment, const char * URL, const char * encoding, int options) {
-    opcContainerInputStream* stream=opcContainerOpenInputStreamEx(container, partName, rels_segment);
-    if (NULL!=stream) {
-        if (0==mceTextReaderInit(mceTextReader,
-                                 xmlReaderForIO((xmlInputReadCallback)opcContainerReadInputStream,
-                                                (xmlInputCloseCallback)opcContainerCloseInputStream,
-                                                stream, URL, encoding, options))) {
-            return OPC_ERROR_NONE;
-        } else {
-            return OPC_ERROR_STREAM;
-        }
+opc_error_t opcXmlReaderOpenEx(opcContainer *container,
+                               mceTextReader_t *mceTextReader,
+                               const xmlChar *partName, opc_bool_t rels_segment,
+                               const char *URL, const char *encoding,
+                               int options) {
+  opcContainerInputStream *stream =
+      opcContainerOpenInputStreamEx(container, partName, rels_segment);
+  if (NULL != stream) {
+    if (0 ==
+        mceTextReaderInit(
+            mceTextReader,
+            xmlReaderForIO((xmlInputReadCallback)opcContainerReadInputStream,
+                           (xmlInputCloseCallback)opcContainerCloseInputStream,
+                           stream, URL, encoding, options))) {
+      return OPC_ERROR_NONE;
     } else {
-        return OPC_ERROR_STREAM;
+      return OPC_ERROR_STREAM;
     }
+  } else {
+    return OPC_ERROR_STREAM;
+  }
 }
 
-opc_error_t opcXmlReaderOpen(opcContainer *container, mceTextReader_t *mceTextReader, const xmlChar *partName, const char * URL, const char * encoding, int options) {
-    return opcXmlReaderOpenEx(container, mceTextReader, (partName!=NULL && partName[0]=='/'?partName+1:partName), OPC_FALSE, URL, encoding, options);
+opc_error_t opcXmlReaderOpen(opcContainer *container,
+                             mceTextReader_t *mceTextReader,
+                             const xmlChar *partName, const char *URL,
+                             const char *encoding, int options) {
+  return opcXmlReaderOpenEx(
+      container, mceTextReader,
+      (partName != NULL && partName[0] == '/' ? partName + 1 : partName),
+      OPC_FALSE, URL, encoding, options);
 }
 
-xmlDocPtr opcXmlReaderReadDoc(opcContainer *container, const xmlChar *partName, const char * URL, const char * encoding, int options) {
-    opcContainerInputStream* stream=opcContainerOpenInputStreamEx(container, partName, OPC_FALSE);
-    if (NULL!=stream) {
-        xmlDocPtr doc=xmlReadIO((xmlInputReadCallback)opcContainerReadInputStream,
-                                (xmlInputCloseCallback)opcContainerCloseInputStream,
-                                stream, URL, encoding, options);
-        return doc;
-    } else {
-        return NULL;
-    }
+xmlDocPtr opcXmlReaderReadDoc(opcContainer *container, const xmlChar *partName,
+                              const char *URL, const char *encoding,
+                              int options) {
+  opcContainerInputStream *stream =
+      opcContainerOpenInputStreamEx(container, partName, OPC_FALSE);
+  if (NULL != stream) {
+    xmlDocPtr doc =
+        xmlReadIO((xmlInputReadCallback)opcContainerReadInputStream,
+                  (xmlInputCloseCallback)opcContainerCloseInputStream, stream,
+                  URL, encoding, options);
+    return doc;
+  } else {
+    return NULL;
+  }
 }

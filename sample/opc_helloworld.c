@@ -45,20 +45,19 @@
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-	if (OPC_ERROR_NONE==opcInitLibrary()) {
-		printf("libopc as well as zlib and libxml2 are ready to use.\n");
-		opcFreeLibrary();
+  if (OPC_ERROR_NONE == opcInitLibrary()) {
+    printf("libopc as well as zlib and libxml2 are ready to use.\n");
+    opcFreeLibrary();
 #ifdef WIN32
     OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-		return 0;
-	}  else  {
-		printf("error initializing libopc.\n ");
-		return 1;
-	}
+    return 0;
+  } else {
+    printf("error initializing libopc.\n ");
+    return 1;
+  }
 }

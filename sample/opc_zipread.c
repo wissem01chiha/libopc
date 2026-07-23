@@ -31,18 +31,19 @@
  */
 
 #include <opc/opc.h>
+#include <opc/zip.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <opc/zip.h>
 #include <zlib.h> // for crc32 function
 #ifdef WIN32
 #include <crtdbg.h>
 #endif
 
 /*
-    This module demonstrates the low-level opcZipLoader functionality. You can use this method to get very information about a
-    ZIP file. This can also be used to implement streaming-based access to ZIP files.
+    This module demonstrates the low-level opcZipLoader functionality. You can
+   use this method to get very information about a ZIP file. This can also be
+   used to implement streaming-based access to ZIP files.
 
     Ussage:
     opc_zipread [--verify] [--skip] FILENAME
@@ -57,74 +58,69 @@
 
 static opc_bool_t verify_crc = OPC_FALSE;
 
-opc_error_t loadSegment(void *iocontext,
-                        void *userctx,
-                        opcZipSegmentInfo_t *info,
-                        opcZipLoaderOpenCallback *open,
-                        opcZipLoaderReadCallback *read,
-                        opcZipLoaderCloseCallback *close,
-                        opcZipLoaderSkipCallback *skip) {
-    printf("%i: %s%s(%i%s) %i/%i %i/%i...", (int)info->stream_ofs,
-                              info->name,
-                              (info->rels_segment?"(.rels)":""),
-                              info->segment_number,
-                              (info->last_segment?".last":""),
-                              info->compressed_size, info->uncompressed_size,
-                              info->min_header_size, info->header_size);
-    if (!verify_crc) {
-        // enable this to SKIP throught the files FAST.
-        OPC_ENSURE(0==skip(iocontext));
-        printf("skipped\n");
-    } else {
-        // enable this to very the CRC checksums
-        opc_bool_t ok=OPC_FALSE;
-        if (0==open(iocontext)) {
-            opc_uint32_t crc=0;
-            char buf[OPC_DEFLATE_BUFFER_SIZE];
-            int ret=0;
-            while((ret=read(iocontext, buf, sizeof(buf)))>0) {
-                crc=crc32(crc, (const Bytef*)buf, ret);
-            }
-            OPC_ENSURE(0==close(iocontext));
-            ok=(info->data_crc==crc);
-        }
-        if (ok) {
-            printf("ok\n");
-        } else {
-            printf("failure\n");
-        }
+opc_error_t
+loadSegment(void *iocontext, void *userctx, opcZipSegmentInfo_t *info,
+            opcZipLoaderOpenCallback *open, opcZipLoaderReadCallback *read,
+            opcZipLoaderCloseCallback *close, opcZipLoaderSkipCallback *skip) {
+  printf("%i: %s%s(%i%s) %i/%i %i/%i...", (int)info->stream_ofs, info->name,
+         (info->rels_segment ? "(.rels)" : ""), info->segment_number,
+         (info->last_segment ? ".last" : ""), info->compressed_size,
+         info->uncompressed_size, info->min_header_size, info->header_size);
+  if (!verify_crc) {
+    // enable this to SKIP throught the files FAST.
+    OPC_ENSURE(0 == skip(iocontext));
+    printf("skipped\n");
+  } else {
+    // enable this to very the CRC checksums
+    opc_bool_t ok = OPC_FALSE;
+    if (0 == open(iocontext)) {
+      opc_uint32_t crc = 0;
+      char buf[OPC_DEFLATE_BUFFER_SIZE];
+      int ret = 0;
+      while ((ret = read(iocontext, buf, sizeof(buf))) > 0) {
+        crc = crc32(crc, (const Bytef *)buf, ret);
+      }
+      OPC_ENSURE(0 == close(iocontext));
+      ok = (info->data_crc == crc);
     }
-    return OPC_ERROR_NONE;
+    if (ok) {
+      printf("ok\n");
+    } else {
+      printf("failure\n");
+    }
+  }
+  return OPC_ERROR_NONE;
 }
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    time_t start_time=time(NULL);
-    opc_error_t err=OPC_ERROR_NONE;
-    if (OPC_ERROR_NONE==(err=opcInitLibrary())) {
-        for(int i=1;OPC_ERROR_NONE==err && i<argc;i++) {
-            if (xmlStrcasecmp(_X(argv[i]), _X("--verify"))==0) {
-                verify_crc=OPC_TRUE;
-            } else if (xmlStrcasecmp(_X(argv[i]), _X("--skip"))==0) {
-                verify_crc=OPC_FALSE;
-            } else {
-                opcIO_t io;
-                if (OPC_ERROR_NONE==opcFileInitIOFile(&io, _X(argv[i]), OPC_FILE_READ)) {
-                    err=opcZipLoader(&io, NULL, loadSegment);
-                }
-                OPC_ENSURE(OPC_ERROR_NONE==opcFileCleanupIO(&io));
-            }
+  time_t start_time = time(NULL);
+  opc_error_t err = OPC_ERROR_NONE;
+  if (OPC_ERROR_NONE == (err = opcInitLibrary())) {
+    for (int i = 1; OPC_ERROR_NONE == err && i < argc; i++) {
+      if (xmlStrcasecmp(_X(argv[i]), _X("--verify")) == 0) {
+        verify_crc = OPC_TRUE;
+      } else if (xmlStrcasecmp(_X(argv[i]), _X("--skip")) == 0) {
+        verify_crc = OPC_FALSE;
+      } else {
+        opcIO_t io;
+        if (OPC_ERROR_NONE ==
+            opcFileInitIOFile(&io, _X(argv[i]), OPC_FILE_READ)) {
+          err = opcZipLoader(&io, NULL, loadSegment);
         }
-        if (OPC_ERROR_NONE==err) err=opcFreeLibrary();
+        OPC_ENSURE(OPC_ERROR_NONE == opcFileCleanupIO(&io));
+      }
     }
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+    if (OPC_ERROR_NONE == err)
+      err = opcFreeLibrary();
+  }
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return (OPC_ERROR_NONE==err?0:3);
+  return (OPC_ERROR_NONE == err ? 0 : 3);
 }

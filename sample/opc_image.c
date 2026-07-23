@@ -49,51 +49,55 @@
 #endif
 
 static void extract(opcContainer *c, opcPart p, const char *path) {
-    char filename[OPC_MAX_PATH];
-    opc_uint32_t i=xmlStrlen(p);
-    while(i>0 && p[i]!='/') i--;
-    if (p[i]=='/') i++;
-    strcpy(filename, path);
-    strcat(filename,  (char *)(p+i));
-    FILE *out=fopen(filename, "wb");
-    if (NULL!=out) {
-        opcContainerInputStream *stream=opcContainerOpenInputStream(c, p);
-        if (NULL!=stream) {
-            opc_uint32_t  ret=0;
-            opc_uint8_t buf[100];
-            while((ret=opcContainerReadInputStream(stream, buf, sizeof(buf)))>0) {
-                fwrite(buf, sizeof(char), ret, out);
-            }
-            opcContainerCloseInputStream(stream);
-        }
-        fclose(out);
+  char filename[OPC_MAX_PATH];
+  opc_uint32_t i = xmlStrlen(p);
+  while (i > 0 && p[i] != '/')
+    i--;
+  if (p[i] == '/')
+    i++;
+  strcpy(filename, path);
+  strcat(filename, (char *)(p + i));
+  FILE *out = fopen(filename, "wb");
+  if (NULL != out) {
+    opcContainerInputStream *stream = opcContainerOpenInputStream(c, p);
+    if (NULL != stream) {
+      opc_uint32_t ret = 0;
+      opc_uint8_t buf[100];
+      while ((ret = opcContainerReadInputStream(stream, buf, sizeof(buf))) >
+             0) {
+        fwrite(buf, sizeof(char), ret, out);
+      }
+      opcContainerCloseInputStream(stream);
     }
+    fclose(out);
+  }
 }
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    opcInitLibrary();
-    opcContainer *c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
-    const char *path=(argc>1?argv[2]:"");
-    if (NULL!=c) {
-        for(opcPart part=opcPartGetFirst(c);OPC_PART_INVALID!=part;part=opcPartGetNext(c, part)) {
-            const xmlChar *type=opcPartGetType(c, part);
-            if (xmlStrcmp(type, _X("image/jpeg"))==0) {
-                extract(c, part, path);
-            } else if (xmlStrcmp(type, _X("image/png"))==0) {
-                extract(c, part, path);
-            } else {
-                printf("skipped %s of type %s\n", part, type);
-            }
-        }
-        opcContainerClose(c, OPC_CLOSE_NOW);
+  opcInitLibrary();
+  opcContainer *c =
+      opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_ONLY, NULL, NULL);
+  const char *path = (argc > 1 ? argv[2] : "");
+  if (NULL != c) {
+    for (opcPart part = opcPartGetFirst(c); OPC_PART_INVALID != part;
+         part = opcPartGetNext(c, part)) {
+      const xmlChar *type = opcPartGetType(c, part);
+      if (xmlStrcmp(type, _X("image/jpeg")) == 0) {
+        extract(c, part, path);
+      } else if (xmlStrcmp(type, _X("image/png")) == 0) {
+        extract(c, part, path);
+      } else {
+        printf("skipped %s of type %s\n", part, type);
+      }
     }
-    opcFreeLibrary();
+    opcContainerClose(c, OPC_CLOSE_NOW);
+  }
+  opcFreeLibrary();
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return 0;
+  return 0;
 }

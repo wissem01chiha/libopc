@@ -1,4 +1,5 @@
 title: libopc
 description: Open Packaging Convention Library
-show_downloads: true
-theme: jekyll-theme-cayman
+remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-default-layout

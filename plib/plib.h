@@ -37,12 +37,12 @@
 extern "C" {
 #endif
 
-#include <stdlib.h>
-#include <string.h>
 #include <limits.h>
 #include <stddef.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 
 #ifdef _WIN32
@@ -76,24 +76,24 @@ typedef size_t psize_t;
 #define PINT32_MIN INT_MIN
 #define PUINT32_MAX UINT_MAX
 #define PUINT32_MIN 0
-#define PUINT16_MAX	USHRT_MAX
+#define PUINT16_MAX USHRT_MAX
 #define PUINT16_MIN 0
 
 /**
- Converts an ASCII string to a xmlChar string. This only works for ASCII strings.
+ Converts an ASCII string to a xmlChar string. This only works for ASCII
+ strings.
  */
 #ifndef _X
 #define _X(s) BAD_CAST(s)
 #endif
 
-
 /**
- Converts an xmlChar string to an ASCII string. This only works for ASCII charsets.
+ Converts an xmlChar string to an ASCII string. This only works for ASCII
+ charsets.
  */
 #ifndef _X2C
-#define _X2C(s) ((char*)(s))
+#define _X2C(s) ((char *)(s))
 #endif
-
 
 #define PASSERT(e) assert(e)
 #ifdef NDEBUG
@@ -101,13 +101,11 @@ typedef size_t psize_t;
 #else
 #define PENSURE(e) assert(e)
 #endif
-#define PTRUE (0==0)
-#define PFALSE (0==1)
-
+#define PTRUE (0 == 0)
+#define PFALSE (0 == 1)
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif /* _PLIB_PLIB_H_ */

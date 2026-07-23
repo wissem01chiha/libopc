@@ -29,5 +29,5 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <opc/opc.h>
 #include "internal.h"
+#include <opc/opc.h>

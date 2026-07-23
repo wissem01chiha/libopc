@@ -39,130 +39,147 @@
     opc_xml OOXMLI1.docx "word/document.xml"
 */
 
+#include <libxml/xmlwriter.h>
 #include <opc/opc.h>
+#include <slog.h>
 #include <stdio.h>
 #include <time.h>
-#include <libxml/xmlwriter.h>
-#include <slog.h>
 #ifdef WIN32
 #include <crtdbg.h>
 #endif
 
-
-static int  xmlOutputWrite(void * context, const char * buffer, int len) {
-    FILE *out=(FILE*)context;
-    return fwrite(buffer, sizeof(char), len, out);
+static int xmlOutputWrite(void *context, const char *buffer, int len) {
+  FILE *out = (FILE *)context;
+  return fwrite(buffer, sizeof(char), len, out);
 }
 
-static int xmlOutputClose(void * context) {
-    return 0;
-}
+static int xmlOutputClose(void *context) { return 0; }
 
 static void dumpPartsAsJSON(opcContainer *c, int indent) {
-    printf("["); if (indent) printf("\n");
-    opcPart part=OPC_PART_INVALID;
-    opcPart next=OPC_PART_INVALID;
-    for(part=opcPartGetFirst(c);OPC_PART_INVALID!=part;part=next) {
-        next=opcPartGetNext(c, part);
-        if (indent) {
-            printf("  {\n    \"name\": \"%s\",\n    \"type\":\"%s\"\n  }%s\n", part, opcPartGetType(c, part), (OPC_PART_INVALID==next?"":","));
-        } else {
-            printf("{\"name\": \"%s\", \"type\":\"%s\"}%s", part, opcPartGetType(c, part), (OPC_PART_INVALID==next?"":","));
-        }
+  printf("[");
+  if (indent)
+    printf("\n");
+  opcPart part = OPC_PART_INVALID;
+  opcPart next = OPC_PART_INVALID;
+  for (part = opcPartGetFirst(c); OPC_PART_INVALID != part; part = next) {
+    next = opcPartGetNext(c, part);
+    if (indent) {
+      printf("  {\n    \"name\": \"%s\",\n    \"type\":\"%s\"\n  }%s\n", part,
+             opcPartGetType(c, part), (OPC_PART_INVALID == next ? "" : ","));
+    } else {
+      printf("{\"name\": \"%s\", \"type\":\"%s\"}%s", part,
+             opcPartGetType(c, part), (OPC_PART_INVALID == next ? "" : ","));
     }
-    printf("]"); if (indent) printf("\n");
+  }
+  printf("]");
+  if (indent)
+    printf("\n");
 }
 
-int main( int argc, const char* argv[] )
-{
-    slog_init("mce_extract.log", SLOG_FLAGS_ALL, 0);
+int main(int argc, const char *argv[]) {
+  slog_init("mce_extract.log", SLOG_FLAGS_ALL, 0);
 
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    int ret=-1;
-    time_t start_time=time(NULL);
-    FILE *file=NULL;
-    const xmlChar *containerPath8=NULL;
-    const xmlChar *partName8=NULL;
-    xmlTextWriter *writer=NULL;
-    int writer_indent=0;
-    opc_bool_t reader_mce=OPC_TRUE;
-    for(int i=1;i<argc;i++) {
-        if ((0==xmlStrcmp(_X("--understands"), _X(argv[i])) || 0==xmlStrcmp(_X("-u"), _X(argv[i]))) && i+1<argc) {
-	    i++; // skip namespace, registered later when parser was created.
-        } else if ((0==xmlStrcmp(_X("--out"), _X(argv[i])) || 0==xmlStrcmp(_X("--out"), _X(argv[i]))) && i+1<argc && NULL==file) {
-            const char *filename=argv[++i];
-            file=fopen(filename, "w");
-        } else if (0==xmlStrcmp(_X("--indent"), _X(argv[i]))) {
-            writer_indent=1;
-        } else if (0==xmlStrcmp(_X("--raw"), _X(argv[i]))) {
-            reader_mce=OPC_FALSE;
-        } else if (NULL==containerPath8) {
-            containerPath8=_X(argv[i]);
-        } else if (NULL==partName8) {
-            partName8=_X(argv[i]);
-        } else {
-            fprintf(stderr, "IGNORED: %s\n", argv[i]);
-        }
-    }
-    if (NULL!=file) {
-        xmlOutputBuffer *out=xmlOutputBufferCreateIO(xmlOutputWrite, xmlOutputClose, file, NULL);
-        if (NULL!=out) {
-            writer=xmlNewTextWriter(out);
-        }
+  int ret = -1;
+  time_t start_time = time(NULL);
+  FILE *file = NULL;
+  const xmlChar *containerPath8 = NULL;
+  const xmlChar *partName8 = NULL;
+  xmlTextWriter *writer = NULL;
+  int writer_indent = 0;
+  opc_bool_t reader_mce = OPC_TRUE;
+  for (int i = 1; i < argc; i++) {
+    if ((0 == xmlStrcmp(_X("--understands"), _X(argv[i])) ||
+         0 == xmlStrcmp(_X("-u"), _X(argv[i]))) &&
+        i + 1 < argc) {
+      i++; // skip namespace, registered later when parser was created.
+    } else if ((0 == xmlStrcmp(_X("--out"), _X(argv[i])) ||
+                0 == xmlStrcmp(_X("--out"), _X(argv[i]))) &&
+               i + 1 < argc && NULL == file) {
+      const char *filename = argv[++i];
+      file = fopen(filename, "w");
+    } else if (0 == xmlStrcmp(_X("--indent"), _X(argv[i]))) {
+      writer_indent = 1;
+    } else if (0 == xmlStrcmp(_X("--raw"), _X(argv[i]))) {
+      reader_mce = OPC_FALSE;
+    } else if (NULL == containerPath8) {
+      containerPath8 = _X(argv[i]);
+    } else if (NULL == partName8) {
+      partName8 = _X(argv[i]);
     } else {
-        xmlOutputBuffer *out=xmlOutputBufferCreateIO(xmlOutputWrite, xmlOutputClose, stdout, NULL);
-        if (NULL!=out) {
-            writer=xmlNewTextWriter(out);
-        }
+      fprintf(stderr, "IGNORED: %s\n", argv[i]);
     }
-    if (NULL==containerPath8 || NULL==writer) {
-        slog_info("mce_extract FILENAME");
-        slog_info("Sample : mce_extract test.docx word/document.xml\n");
-    } else if (OPC_ERROR_NONE==opcInitLibrary()) {
-        xmlTextWriterSetIndent(writer, writer_indent);
-        opcContainer *c=NULL;
-        if (NULL!=(c=opcContainerOpen(containerPath8, OPC_OPEN_READ_ONLY, NULL, NULL))) {
-            if (NULL==partName8) {
-                dumpPartsAsJSON(c, writer_indent);
-            } else {
-                opcPart part=OPC_PART_INVALID;
-                if ((part=opcPartFind(c, partName8, NULL, 0))!=OPC_PART_INVALID) {
-                    mceTextReader_t reader;
-                    if (OPC_ERROR_NONE==opcXmlReaderOpen(c, &reader, part, NULL, NULL, 0)) {
-                        mceTextReaderDisableMCE(&reader, !reader_mce);
-                        for(int i=1;i<argc;i++) {
-                            if ((0==xmlStrcmp(_X("--understands"), _X(argv[i])) || 0==xmlStrcmp(_X("-u"), _X(argv[i]))) && i+1<argc) {
-                                const xmlChar *ns=_X(argv[++i]);
-                                mceTextReaderUnderstandsNamespace(&reader, ns);
-                            }
-                        }
-
-                        if (-1==mceTextReaderDump(&reader, writer, PTRUE)) {
-                            ret=mceTextReaderGetError(&reader);
-                        } else {
-                            ret=0;
-                        }
-                        mceTextReaderCleanup(&reader);
-                    } else {
-                        fprintf(stderr, "ERROR: part \"%s\" could not be opened for XML reading.\n", argv[2]);
-                    }
-                } else {
-                    fprintf(stderr, "ERROR: part \"%s\" could not be opened in \"%s\".\n", argv[2], argv[1]);
-                }
+  }
+  if (NULL != file) {
+    xmlOutputBuffer *out =
+        xmlOutputBufferCreateIO(xmlOutputWrite, xmlOutputClose, file, NULL);
+    if (NULL != out) {
+      writer = xmlNewTextWriter(out);
+    }
+  } else {
+    xmlOutputBuffer *out =
+        xmlOutputBufferCreateIO(xmlOutputWrite, xmlOutputClose, stdout, NULL);
+    if (NULL != out) {
+      writer = xmlNewTextWriter(out);
+    }
+  }
+  if (NULL == containerPath8 || NULL == writer) {
+    slog_info("mce_extract FILENAME");
+    slog_info("Sample : mce_extract test.docx word/document.xml\n");
+  } else if (OPC_ERROR_NONE == opcInitLibrary()) {
+    xmlTextWriterSetIndent(writer, writer_indent);
+    opcContainer *c = NULL;
+    if (NULL != (c = opcContainerOpen(containerPath8, OPC_OPEN_READ_ONLY, NULL,
+                                      NULL))) {
+      if (NULL == partName8) {
+        dumpPartsAsJSON(c, writer_indent);
+      } else {
+        opcPart part = OPC_PART_INVALID;
+        if ((part = opcPartFind(c, partName8, NULL, 0)) != OPC_PART_INVALID) {
+          mceTextReader_t reader;
+          if (OPC_ERROR_NONE ==
+              opcXmlReaderOpen(c, &reader, part, NULL, NULL, 0)) {
+            mceTextReaderDisableMCE(&reader, !reader_mce);
+            for (int i = 1; i < argc; i++) {
+              if ((0 == xmlStrcmp(_X("--understands"), _X(argv[i])) ||
+                   0 == xmlStrcmp(_X("-u"), _X(argv[i]))) &&
+                  i + 1 < argc) {
+                const xmlChar *ns = _X(argv[++i]);
+                mceTextReaderUnderstandsNamespace(&reader, ns);
+              }
             }
-            opcContainerClose(c, OPC_CLOSE_NOW);
+
+            if (-1 == mceTextReaderDump(&reader, writer, PTRUE)) {
+              ret = mceTextReaderGetError(&reader);
+            } else {
+              ret = 0;
+            }
+            mceTextReaderCleanup(&reader);
+          } else {
+            fprintf(stderr,
+                    "ERROR: part \"%s\" could not be opened for XML reading.\n",
+                    argv[2]);
+          }
         } else {
-            fprintf(stderr, "ERROR: file \"%s\" could not be opened.\n", argv[1]);
+          fprintf(stderr, "ERROR: part \"%s\" could not be opened in \"%s\".\n",
+                  argv[2], argv[1]);
         }
-        opcFreeLibrary();
+      }
+      opcContainerClose(c, OPC_CLOSE_NOW);
     } else {
-        slog_error("initialization of libopc failed.");
+      fprintf(stderr, "ERROR: file \"%s\" could not be opened.\n", argv[1]);
     }
-    if (NULL!=writer) xmlFreeTextWriter(writer);
-    if (NULL!=file) fclose(file);
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
-    return ret;
+    opcFreeLibrary();
+  } else {
+    slog_error("initialization of libopc failed.");
+  }
+  if (NULL != writer)
+    xmlFreeTextWriter(writer);
+  if (NULL != file)
+    fclose(file);
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+  return ret;
 }

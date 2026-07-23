@@ -37,73 +37,77 @@
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
+int main(int argc, const char *argv[]) {
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    time_t start_time=time(NULL);
-    opc_error_t err=OPC_ERROR_NONE;
-    if (OPC_ERROR_NONE==opcInitLibrary() && argc>1) {
-        opcContainer *c=NULL;
-        if (NULL!=(c=opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_WRITE, NULL, NULL))) {
-            pbool_t closed=PFALSE;
-            for(puint32_t i=2;i<argc;i++) {
-                if (xmlStrcmp(_X(argv[i]), _X("--dump"))==0) {
-                    opcContainerDump(c, stdout);
-                } else if (xmlStrcmp(_X(argv[i]), _X("--create"))==0 && i+4<argc) {
-                    const xmlChar *part_name=_X(argv[i+1]);
-                    const xmlChar *part_type=_X(argv[i+2]);
-                    const puint32_t part_flags=atoi(argv[i+3]);
-                    if (xmlStrcasecmp(part_type, _X("NULL"))==0) {
-                        part_type=NULL;
-                    }
-                    opcPart part=opcPartCreate(c, part_name, part_type, part_flags);
-                    if (OPC_PART_INVALID!=part) {
-                        opcContainerOutputStream* stream = opcContainerCreateOutputStream(c, part, OPC_COMPRESSIONOPTION_NORMAL);
-                        if (stream != NULL) {
-                            const char *filename=argv[i+4];
-                            FILE *in=fopen(filename, "rb");
-                            if (NULL!=in) {
-                                int ret=0;
-                                opc_uint8_t buf[100];
-                                while((ret=fread(buf, sizeof(opc_uint8_t), sizeof(buf), in))>0) {
-                                    opcContainerWriteOutputStream(stream, buf, ret);
-                                }
-                                fclose(in);
-                            }
-                            opcContainerCloseOutputStream(stream);
-                        }
-                    }
-                    i+=4;
-                } else if (xmlStrcmp(_X(argv[i]), _X("--delete"))==0 && i+1<argc) {
-                    const xmlChar *part_name=_X(argv[i+1]);
-                    OPC_ENSURE(OPC_ERROR_NONE==opcPartDelete(c, part_name));
-                    i+=1;
-                } else {
-                    printf("ERROR: unknown command \"%s\".\n", argv[i]);
-                    return 3;
+  time_t start_time = time(NULL);
+  opc_error_t err = OPC_ERROR_NONE;
+  if (OPC_ERROR_NONE == opcInitLibrary() && argc > 1) {
+    opcContainer *c = NULL;
+    if (NULL !=
+        (c = opcContainerOpen(_X(argv[1]), OPC_OPEN_READ_WRITE, NULL, NULL))) {
+      pbool_t closed = PFALSE;
+      for (puint32_t i = 2; i < argc; i++) {
+        if (xmlStrcmp(_X(argv[i]), _X("--dump")) == 0) {
+          opcContainerDump(c, stdout);
+        } else if (xmlStrcmp(_X(argv[i]), _X("--create")) == 0 &&
+                   i + 4 < argc) {
+          const xmlChar *part_name = _X(argv[i + 1]);
+          const xmlChar *part_type = _X(argv[i + 2]);
+          const puint32_t part_flags = atoi(argv[i + 3]);
+          if (xmlStrcasecmp(part_type, _X("NULL")) == 0) {
+            part_type = NULL;
+          }
+          opcPart part = opcPartCreate(c, part_name, part_type, part_flags);
+          if (OPC_PART_INVALID != part) {
+            opcContainerOutputStream *stream = opcContainerCreateOutputStream(
+                c, part, OPC_COMPRESSIONOPTION_NORMAL);
+            if (stream != NULL) {
+              const char *filename = argv[i + 4];
+              FILE *in = fopen(filename, "rb");
+              if (NULL != in) {
+                int ret = 0;
+                opc_uint8_t buf[100];
+                while ((ret = fread(buf, sizeof(opc_uint8_t), sizeof(buf),
+                                    in)) > 0) {
+                  opcContainerWriteOutputStream(stream, buf, ret);
                 }
+                fclose(in);
+              }
+              opcContainerCloseOutputStream(stream);
             }
-            if (!closed) {
-                opcContainerClose(c, OPC_CLOSE_NOW);
-            }
+          }
+          i += 4;
+        } else if (xmlStrcmp(_X(argv[i]), _X("--delete")) == 0 &&
+                   i + 1 < argc) {
+          const xmlChar *part_name = _X(argv[i + 1]);
+          OPC_ENSURE(OPC_ERROR_NONE == opcPartDelete(c, part_name));
+          i += 1;
         } else {
-            printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
-            err=OPC_ERROR_STREAM;
+          printf("ERROR: unknown command \"%s\".\n", argv[i]);
+          return 3;
         }
-        opcFreeLibrary();
-    } else if (2==argc) {
-        printf("ERROR: initialization of libopc failed.\n");
-        err=OPC_ERROR_STREAM;
+      }
+      if (!closed) {
+        opcContainerClose(c, OPC_CLOSE_NOW);
+      }
     } else {
-        printf("opc_proc FILENAME [COMMANDS].\n\n");
-        printf("Sample: opc_proc test.docx --dump\n");
+      printf("ERROR: \"%s\" could not be opened.\n", argv[1]);
+      err = OPC_ERROR_STREAM;
     }
-    time_t end_time=time(NULL);
-    fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
+    opcFreeLibrary();
+  } else if (2 == argc) {
+    printf("ERROR: initialization of libopc failed.\n");
+    err = OPC_ERROR_STREAM;
+  } else {
+    printf("opc_proc FILENAME [COMMANDS].\n\n");
+    printf("Sample: opc_proc test.docx --dump\n");
+  }
+  time_t end_time = time(NULL);
+  fprintf(stderr, "time %.2lfsec\n", difftime(end_time, start_time));
 #ifdef WIN32
-    OPC_ASSERT(!_CrtDumpMemoryLeaks());
+  OPC_ASSERT(!_CrtDumpMemoryLeaks());
 #endif
-    return (OPC_ERROR_NONE==err?0:3);
+  return (OPC_ERROR_NONE == err ? 0 : 3);
 }

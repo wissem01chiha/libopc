@@ -30,46 +30,49 @@
  OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <mce/textreader.h>
-#include <stdio.h>
 #include <slog.h>
+#include <stdio.h>
 #ifdef WIN32
 #include <crtdbg.h>
 #endif
 
-int main( int argc, const char* argv[] )
-{
-    slog_init("mce_read.log", SLOG_FLAGS_ALL, 0);
+int main(int argc, const char *argv[]) {
+  slog_init("mce_read.log", SLOG_FLAGS_ALL, 0);
 
 #ifdef WIN32
-     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    xmlInitParser();
-    const char *src=NULL;
-    const char *dst=NULL;
-    for(int i=1;i<argc;i++) {
-        if (0==strcmp("--understands", argv[i])) i++;
-        else if (NULL==src) src=argv[i];
-        else if (NULL==dst) dst=argv[i];
-        else printf("skipped argument %s\n", argv[i]);
-    }
-    if (NULL!=dst && NULL!=src) {
-        mceTextReader_t reader;
-        if (-1!=mceTextReaderInit(&reader, xmlNewTextReaderFilename(src))) {
-            for(int i=1;i<argc;i++) {
-                if (0==strcmp("--understands", argv[i])) {
-                    mceTextReaderUnderstandsNamespace(&reader, _X(argv[++i]));
-                }
-            }
-            xmlTextWriterPtr writer=xmlNewTextWriterFilename(dst, 0);
-            mceTextReaderDump(&reader, writer, PFALSE);
-            xmlFreeTextWriter(writer);
-            mceTextReaderCleanup(&reader);
-        } else {
-            printf("ERROR: file \"%s\" could not be opened.\n", argv[1]);
+  xmlInitParser();
+  const char *src = NULL;
+  const char *dst = NULL;
+  for (int i = 1; i < argc; i++) {
+    if (0 == strcmp("--understands", argv[i]))
+      i++;
+    else if (NULL == src)
+      src = argv[i];
+    else if (NULL == dst)
+      dst = argv[i];
+    else
+      printf("skipped argument %s\n", argv[i]);
+  }
+  if (NULL != dst && NULL != src) {
+    mceTextReader_t reader;
+    if (-1 != mceTextReaderInit(&reader, xmlNewTextReaderFilename(src))) {
+      for (int i = 1; i < argc; i++) {
+        if (0 == strcmp("--understands", argv[i])) {
+          mceTextReaderUnderstandsNamespace(&reader, _X(argv[++i]));
         }
+      }
+      xmlTextWriterPtr writer = xmlNewTextWriterFilename(dst, 0);
+      mceTextReaderDump(&reader, writer, PFALSE);
+      xmlFreeTextWriter(writer);
+      mceTextReaderCleanup(&reader);
     } else {
-        slog_info("mce_read [--understands NAMESPACE] SRC.XML TARGET.XML");
+      printf("ERROR: file \"%s\" could not be opened.\n", argv[1]);
     }
-    xmlCleanupParser();
-    return 0;
+  } else {
+    slog_info("mce_read [--understands NAMESPACE] SRC.XML TARGET.XML");
+  }
+  xmlCleanupParser();
+  return 0;
 }
