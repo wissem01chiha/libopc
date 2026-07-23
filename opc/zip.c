@@ -133,7 +133,7 @@ static inline opc_error_t _opcZipFileGrow(opcIO_t *io, opc_uint32_t abs) {
   if (OPC_ERROR_NONE == io->state.err) {
     if (abs > io->file_size) {
       io->file_size = abs; //@TODO add error handling here if e.g. file can not
-                           //grow because disk is full etc...
+                           // grow because disk is full etc...
     }
   }
   return io->state.err;
